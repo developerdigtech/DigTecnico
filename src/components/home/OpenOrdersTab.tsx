@@ -14,7 +14,7 @@ const OpenOrdersTab = () => {
   const theme = useTheme();
 
   const colors = {
-    background: theme.background.val,
+   
     cardBackground: theme.backgroundFocus.val,
     text: theme.color.val,
     secondaryText: theme.colorFocus.val,
@@ -31,7 +31,7 @@ const OpenOrdersTab = () => {
 
   const renderItem = ({ item }: { item: Order }) => (
     <YStack
-      backgroundColor={colors.cardBackground}
+     bg={"$gray1Dark"}
       padding="$4"
       borderRadius="$4"
       marginBottom="$3"
@@ -77,7 +77,7 @@ const OpenOrdersTab = () => {
       keyExtractor={(item) => item.id}
       contentContainerStyle={{
         padding: 16,
-        backgroundColor: colors.background,
+       
       }}
     />
   );

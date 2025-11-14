@@ -8,7 +8,7 @@ const DashboardTab = () => {
   const isDark = theme.background.val === '#000000' || theme.background.val === 'rgb(0, 0, 0)';
 
   const colors = {
-    background: theme.background.val,
+   
     cardBackground: theme.backgroundFocus.val,
     text: theme.color.val,
     secondaryText: theme.colorFocus.val,
@@ -39,12 +39,20 @@ const DashboardTab = () => {
     { value: 100 },
   ];
 
+  const areaData = [
+    { value: 50, label: 'Seg' },
+    { value: 80, label: 'Ter' },
+    { value: 90, label: 'Qua' },
+    { value: 70, label: 'Qui' },
+    { value: 100, label: 'Sex' },
+  ];
+
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.background }}>
+    <ScrollView style={{ flex: 1,  }}>
       <YStack padding="$4" gap="$4">
         {/* Card Ordens por Mês */}
         <YStack
-          backgroundColor={colors.cardBackground}
+          bg={"$gray1Dark"}
           padding="$4"
           borderRadius="$4"
           shadowColor="#000"
@@ -76,7 +84,7 @@ const DashboardTab = () => {
 
         {/* Card Status das Ordens */}
         <YStack
-          backgroundColor={colors.cardBackground}
+          bg={"$gray1Dark"}
           padding="$4"
           borderRadius="$4"
           shadowColor="#000"
@@ -149,7 +157,7 @@ const DashboardTab = () => {
 
         {/* Card Tendência Semanal */}
         <YStack
-          backgroundColor={colors.cardBackground}
+          bg={"$gray1Dark"}
           padding="$4"
           borderRadius="$4"
           shadowColor="#000"
@@ -176,6 +184,12 @@ const DashboardTab = () => {
             hideYAxisText
             yAxisThickness={0}
             xAxisThickness={0}
+            dataPointsColor={colors.primary}
+            areaChart
+            startFillColor={colors.primary}
+            endFillColor={`${colors.primary}30`}
+            startOpacity={0.6}
+            endOpacity={0.1}
           />
         </YStack>
       </YStack>

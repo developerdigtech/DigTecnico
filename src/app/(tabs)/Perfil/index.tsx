@@ -107,7 +107,7 @@ export default function Perfil() {
                 
                 {/* Card de Informações do Usuário */}
                 <Card
-                    backgroundColor="$backgroundHover"
+                    backgroundColor="$gray3"
                     borderRadius="$4"
                     padding="$3"
                     borderWidth={1}
@@ -145,7 +145,7 @@ export default function Perfil() {
 
                 {/* Informações da Rede - Acordeão */}
                 <Card
-                    backgroundColor="$backgroundHover"
+                    backgroundColor="$gray3"
                     borderRadius="$4"
                     padding="$3"
                     borderWidth={1}

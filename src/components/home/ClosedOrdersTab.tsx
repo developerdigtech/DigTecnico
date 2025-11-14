@@ -14,7 +14,7 @@ const ClosedOrdersTab = () => {
   const theme = useTheme();
 
   const colors = {
-    background: theme.background.val,
+   
     cardBackground: theme.backgroundFocus.val,
     text: theme.color.val,
     secondaryText: theme.colorFocus.val,
@@ -30,7 +30,7 @@ const ClosedOrdersTab = () => {
 
   const renderItem = ({ item }: { item: Order }) => (
     <YStack
-      backgroundColor={colors.cardBackground}
+      bg={"$gray1Dark"}
       padding="$4"
       borderRadius="$4"
       marginBottom="$3"
@@ -42,7 +42,7 @@ const ClosedOrdersTab = () => {
       pressStyle={{ opacity: 0.9 }}
       cursor="pointer"
     >
-      <XStack justifyContent="space-between" alignItems="center" marginBottom="$2">
+      <XStack justifyContent="space-between" alignItems="center" marginBottom="$2" >
         <Text fontSize={16} fontWeight="700" color={colors.primary}>
           OS #{item.id}
         </Text>
@@ -81,7 +81,7 @@ const ClosedOrdersTab = () => {
       keyExtractor={(item) => item.id}
       contentContainerStyle={{
         padding: 16,
-        backgroundColor: colors.background,
+        
       }}
     />
   );
