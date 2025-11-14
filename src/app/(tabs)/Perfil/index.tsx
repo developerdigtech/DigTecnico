@@ -14,10 +14,8 @@ export default function Perfil() {
     const [locationPermission, setLocationPermission] = useState(false);
     const insets = useSafeAreaInsets();
 
-    const handleThemeToggle = (checked: boolean) => {
-        setIsDarkMode(checked);
-        // TODO: Implementar persistência do tema com AsyncStorage
-        // e aplicar globalmente usando Context
+    const handleThemeToggle = () => {
+        setIsDarkMode(!isDarkMode);
     };
 
     // Solicita permissão de localização (necessário para SSID no iOS)
@@ -89,7 +87,7 @@ export default function Perfil() {
                             borderWidth={2}
                             borderColor="$background"
                             icon={isDarkMode ? <Moon size={16} color="white" /> : <Sun size={16} color="white" />}
-                            onPress={() => handleThemeToggle(!isDarkMode)}
+                            onPress={handleThemeToggle}
                             pressStyle={{
                                 scale: 0.9,
                                 backgroundColor: isDarkMode ? "$purple9" : "$orange9"
