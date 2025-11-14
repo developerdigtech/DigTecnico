@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router/tabs';
 import { Home, Settings, User, Archive, Search } from '@tamagui/lucide-icons';
 import { YStack, Text } from "tamagui";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const TabIcon = ({ Icon, color, isFocused, label }) => {
     return (
@@ -20,7 +21,7 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
                     left={0}
                     right={0}
                     bottom={0}
-                    backgroundColor={isFocused ? '#007AFF' : 'transparent'}
+                    backgroundColor={isFocused ? '$accent1' : 'transparent'}
                     borderRadius={12}
                     animation="quick"
                     opacity={isFocused ? 1 : 0}
@@ -43,8 +44,9 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
             
             <Text
                 fontSize={10}
-                fontWeight={isFocused ? "700" : "600"}
-                color={isFocused ? "#007AFF" : "#6B7280"}
+                fontWeight={isFocused ? "bold" : "600"}
+                
+                color={isFocused ? "$accent1" : "#6B7280"}
                 animation="quick"
                 opacity={isFocused ? 1 : 0.7}
                 textAlign="center"
@@ -57,6 +59,8 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
 };
 
 export default function TabsLayout() {
+    const insets = useSafeAreaInsets();
+    
     return (
         <Tabs
             screenOptions={{
@@ -78,9 +82,9 @@ export default function TabsLayout() {
                     },
                     shadowOpacity: 0.2,
                     shadowRadius: 24,
-                    paddingBottom: 30,
+                    paddingBottom: insets.bottom > 0 ? insets.bottom : 16,
                     paddingTop: 16,
-                    height: 92,
+                    height: (insets.bottom > 0 ? insets.bottom : 16) + 76,
                     borderTopLeftRadius: 30,
                     borderTopRightRadius: 30,
                     borderTopColor: 'rgba(0, 0, 0, 0.08)',
