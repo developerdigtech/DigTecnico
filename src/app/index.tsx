@@ -2,18 +2,18 @@ import { useState } from 'react';
 import { Button, Input, YStack, Text, Image, View } from 'tamagui';
 import { LogIn } from '@tamagui/lucide-icons';
 import { ImageBackground, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { DarkTheme } from '@react-navigation/native';
+import { Link, router, useRouter } from 'expo-router';
 
 const localLogo = require('../assets/image/logo-fibron.png')
 
-export function LoginScreen() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     // Adicione sua lógica de autenticação aqui
     console.log('Login com:', { email, password });
-    alert(`Login com: ${email}`);
+    router.push("/(tabs)/Dashboard")
   };
 
   return (
@@ -75,9 +75,12 @@ export function LoginScreen() {
               color={'$black1'}
               fontWeight={"bold"}
                theme="accent"
+               
             >
               Entrar
             </Button>
+
+           
           </YStack>
         </YStack>
       </TouchableWithoutFeedback>
