@@ -28,7 +28,7 @@ const HomeScreen = () => {
     text: theme.color.val,
     secondaryText: theme.colorFocus.val,
     border: theme.borderColor.val,
-    primary: '#007AFF',
+    primary: '#22C55E',
   };
 
   const renderScene = SceneMap({
