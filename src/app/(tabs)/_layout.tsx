@@ -1,5 +1,60 @@
 import { Tabs } from 'expo-router/tabs';
-import { Home, Settings, User, FileText } from '@tamagui/lucide-icons';
+import { Home, Settings, User, Archive, Search } from '@tamagui/lucide-icons';
+import { YStack, Text } from "tamagui";
+
+const TabIcon = ({ Icon, color, isFocused, label }) => {
+    return (
+        <YStack 
+            alignItems="center" 
+            justifyContent="center" 
+            gap={4}
+            animation="quick"
+            scale={isFocused ? 1 : 0.9}
+            width={70}
+        >
+            <YStack position="relative">
+                {/* Background animado para o ícone ativo */}
+                <YStack
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    backgroundColor={isFocused ? '#007AFF' : 'transparent'}
+                    borderRadius={12}
+                    animation="quick"
+                    opacity={isFocused ? 1 : 0}
+                />
+                
+                {/* Container do ícone */}
+                <YStack
+                    alignItems="center"
+                    justifyContent="center"
+                    paddingVertical={6}
+                    paddingHorizontal={12}
+                >
+                    <Icon 
+                        size={24} 
+                        color={isFocused ? "#FFFFFF" : "#6B7280"} 
+                        strokeWidth={isFocused ? 2.5 : 2} 
+                    />
+                </YStack>
+            </YStack >
+            
+            <Text
+                fontSize={10}
+                fontWeight={isFocused ? "700" : "600"}
+                color={isFocused ? "#007AFF" : "#6B7280"}
+                animation="quick"
+                opacity={isFocused ? 1 : 0.7}
+                textAlign="center"
+                y={isFocused ? 0 : 2}
+            >
+                {label}
+            </Text>
+        </YStack>
+    );
+};
 
 export default function TabsLayout() {
     return (
@@ -7,39 +62,91 @@ export default function TabsLayout() {
             screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: '#007AFF',
-                tabBarInactiveTintColor: '#8E8E93',
+                tabBarInactiveTintColor: '#6B7280',
                 tabBarStyle: {
-                    backgroundColor: '#000',
-                    borderTopColor: '#1C1C1E',
+                    backgroundColor: '#FFFFFF',
+                    borderTopWidth: 0,
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    elevation: 30,
+                    shadowColor: '#000',
+                    shadowOffset: { 
+                        width: 0, 
+                        height: -8 
+                    },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 24,
+                    paddingBottom: 30,
+                    paddingTop: 16,
+                    height: 92,
+                    borderTopLeftRadius: 30,
+                    borderTopRightRadius: 30,
+                    borderTopColor: 'rgba(0, 0, 0, 0.08)',
+                    borderTopWidth: 1,
                 },
+                tabBarItemStyle: {
+                    paddingVertical: 8,
+                },
+                tabBarShowLabel: false,
+                tabBarHideOnKeyboard: true,
             }}
         >
-            <Tabs.Screen 
-                name='Dashboard' 
+            <Tabs.Screen
+                name='Home/index'
                 options={{
-                    title: "Painel",
-                    tabBarIcon: ({ color, size }) => <Home size={size} color={color} />
+                    title: "Home",
+                    tabBarIcon: ({ color, focused }) => (
+                        <TabIcon 
+                            Icon={Home} 
+                            color={color}
+                            isFocused={focused} 
+                            label="Home" 
+                        />
+                    )
                 }}
             />
-            <Tabs.Screen 
-                name='Relatorios' 
+            <Tabs.Screen
+                name='Clientes/index'
                 options={{
-                    title: "Relatórios",
-                    tabBarIcon: ({ color, size }) => <FileText size={size} color={color} />
+                    title: "Buscar",
+                    tabBarIcon: ({ color, focused }) => (
+                        <TabIcon 
+                            Icon={Search} 
+                            color={color}
+                            isFocused={focused} 
+                            label="buscar" 
+                        />
+                    )
                 }}
             />
-            <Tabs.Screen 
-                name='Perfil' 
+            <Tabs.Screen
+                name='Almoxarifado/index'
+                options={{
+                    title: "Estoque",
+                    tabBarIcon: ({ color, focused }) => (
+                        <TabIcon 
+                            Icon={Archive} 
+                            color={color}
+                            isFocused={focused} 
+                            label="Estoque" 
+                        />
+                    )
+                }}
+            />
+            <Tabs.Screen
+                name='Perfil/index'
                 options={{
                     title: "Perfil",
-                    tabBarIcon: ({ color, size }) => <User size={size} color={color} />
-                }}
-            />
-            <Tabs.Screen 
-                name='Configuracoes' 
-                options={{
-                    title: "Configurações",
-                    tabBarIcon: ({ color, size }) => <Settings size={size} color={color} />
+                    tabBarIcon: ({ color, focused }) => (
+                        <TabIcon 
+                            Icon={User} 
+                            color={color}
+                            isFocused={focused} 
+                            label="Perfil" 
+                        />
+                    )
                 }}
             />
         </Tabs>

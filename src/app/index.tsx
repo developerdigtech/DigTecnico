@@ -13,7 +13,7 @@ export default function LoginPage() {
   const handleLogin = () => {
     // Adicione sua lógica de autenticação aqui
     console.log('Login com:', { email, password });
-    router.push("/(tabs)/Dashboard")
+    router.push("/(tabs)/Home")
   };
 
   return (
