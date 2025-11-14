@@ -88,7 +88,7 @@ export default function TabsLayout() {
                     borderTopLeftRadius: 30,
                     borderTopRightRadius: 30,
                     borderTopColor: 'rgba(0, 0, 0, 0.08)',
-                    borderTopWidth: 1,
+                   
                 },
                 tabBarItemStyle: {
                     paddingVertical: 8,
