@@ -14,7 +14,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Este app precisa acessar sua localização para identificar a rede WiFi conectada.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Este app precisa acessar sua localização para identificar a rede WiFi conectada."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +33,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Permitir acesso à localização para identificar a rede WiFi."
+        }
+      ]
     ]
   }
 }

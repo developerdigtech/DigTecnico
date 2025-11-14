@@ -30,6 +30,7 @@ export default function LoginPage() {
           alignItems="center"
           padding="$4"
           space="$3"
+          
         >
           <YStack
             padding="$4"
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    backgroundColor: '#000000',
   },
   imageStyle: {
     opacity: 0.5,

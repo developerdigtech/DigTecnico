@@ -22,8 +22,8 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
                     right={0}
                     bottom={0}
                     backgroundColor={isFocused ? '$accent1' : 'transparent'}
-                    borderRadius={12}
-                    animation="quick"
+                    borderRadius={16}
+                    animation="slow"
                     opacity={isFocused ? 1 : 0}
                 />
                 
@@ -36,7 +36,7 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
                 >
                     <Icon 
                         size={24} 
-                        color={isFocused ? "#FFFFFF" : "#6B7280"} 
+                        color={isFocused ? "#ffffffff" : "#6B7280"} 
                         strokeWidth={isFocused ? 2.5 : 2} 
                     />
                 </YStack>
@@ -68,7 +68,7 @@ export default function TabsLayout() {
                 tabBarActiveTintColor: '#007AFF',
                 tabBarInactiveTintColor: '#6B7280',
                 tabBarStyle: {
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: '#111111ff',
                     borderTopWidth: 0,
                     position: 'absolute',
                     bottom: 0,
