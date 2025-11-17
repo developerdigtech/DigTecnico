@@ -2,22 +2,34 @@ import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { YStack, XStack, Text, Input, Button, useTheme, Card } from 'tamagui';
 import { Search, User, Phone, MapPin, Mail, Eye } from '@tamagui/lucide-icons';
+import { useThemeContext } from '../../../contexts/ThemeContext';
+
+interface Client {
+  id: number;
+  nome: string;
+  cpf: string;
+  login: string;
+  telefone: string;
+  email: string;
+  endereco: string;
+}
 
 const Relatorios = () => {
   const theme = useTheme();
+  const { isDarkMode } = useThemeContext();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredClients, setFilteredClients] = useState([]);
+  const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
-  // Cores mais suaves para design clean
+  // Cores dinâmicas baseadas no tema
   const colors = {
-    cardBackground: '#111111',
-    text: '#FFFFFF',
-    secondaryText: '#9CA3AF',
-    background: '#000000',
+    cardBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
+    text: isDarkMode ? '#FFFFFF' : '#000000',
+    secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
+    background: isDarkMode ? '#000000' : '#F8F9FA',
     primary: '#22C55E',
-    border: '#1F1F1F',
-    accent: '#374151',
+    border: isDarkMode ? '#333333' : '#E0E0E0',
+    accent: isDarkMode ? '#374151' : '#F3F4F6',
     success: '#22C55E',
   };
 
@@ -70,7 +82,7 @@ const Relatorios = () => {
     setFilteredClients(filtered);
   };
 
-  const ClientCard = ({ client }: { client: any }) => (
+  const ClientCard = ({ client }: { client: Client }) => (
     <Card
       bg={colors.cardBackground}
       padding="$5"

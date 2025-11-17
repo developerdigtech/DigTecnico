@@ -2,8 +2,27 @@ import { Tabs } from 'expo-router/tabs';
 import { Home, Settings, User, Archive, Search } from '@tamagui/lucide-icons';
 import { YStack, Text } from "tamagui";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeContext } from '../../contexts/ThemeContext';
+import { Platform } from 'react-native';
 
-const TabIcon = ({ Icon, color, isFocused, label }) => {
+interface TabIconProps {
+    Icon: any;
+    color: string;
+    isFocused: boolean;
+    label: string;
+}
+
+const TabIcon = ({ Icon, color, isFocused, label }: TabIconProps) => {
+    const { isDarkMode } = useThemeContext();
+
+    const colors = {
+        activeBackground: '#22C55E',
+        activeIcon: '#FFFFFF',
+        activeText: '#22C55E',
+        inactiveIcon: isDarkMode ? '#A0A0A0' : '#6B7280',
+        inactiveText: isDarkMode ? '#A0A0A0' : '#6B7280',
+    };
+
     return (
         <YStack 
             alignItems="center" 
@@ -21,7 +40,7 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
                     left={0}
                     right={0}
                     bottom={0}
-                    backgroundColor={isFocused ? '$accent1' : 'transparent'}
+                    backgroundColor={isFocused ? colors.activeBackground : 'transparent'}
                     borderRadius={16}
                     animation="slow"
                     opacity={isFocused ? 1 : 0}
@@ -36,7 +55,7 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
                 >
                     <Icon 
                         size={24} 
-                        color={isFocused ? "#ffffffff" : "#6B7280"} 
+                        color={isFocused ? colors.activeIcon : colors.inactiveIcon} 
                         strokeWidth={isFocused ? 2.5 : 2} 
                     />
                 </YStack>
@@ -45,8 +64,7 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
             <Text
                 fontSize={10}
                 fontWeight={isFocused ? "bold" : "600"}
-                
-                color={isFocused ? "$accent1" : "#6B7280"}
+                color={isFocused ? colors.activeText : colors.inactiveText}
                 animation="quick"
                 opacity={isFocused ? 1 : 0.7}
                 textAlign="center"
@@ -60,35 +78,44 @@ const TabIcon = ({ Icon, color, isFocused, label }) => {
 
 export default function TabsLayout() {
     const insets = useSafeAreaInsets();
+    const { isDarkMode } = useThemeContext();
+    const isAndroid = Platform.OS === 'android';
+
+    const colors = {
+        tabBarBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
+        tabBarBorder: isDarkMode ? '#333333' : '#E0E0E0',
+        activeTint: '#22C55E',
+        inactiveTint: isDarkMode ? '#A0A0A0' : '#6B7280',
+        shadowColor: isDarkMode ? '#000000' : '#000000',
+    };
     
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: '#007AFF',
-                tabBarInactiveTintColor: '#6B7280',
+                tabBarActiveTintColor: colors.activeTint,
+                tabBarInactiveTintColor: colors.inactiveTint,
                 tabBarStyle: {
-                    backgroundColor: '#111111ff',
-                    borderTopWidth: 0,
+                    backgroundColor: colors.tabBarBackground,
+                    borderTopWidth: 1,
+                    borderTopColor: colors.tabBarBorder,
                     position: 'absolute',
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    elevation: 30,
-                    shadowColor: '#000',
+                    elevation: isAndroid ? 20 : 30,
+                    shadowColor: colors.shadowColor,
                     shadowOffset: { 
                         width: 0, 
                         height: -8 
                     },
-                    shadowOpacity: 0.2,
+                    shadowOpacity: isDarkMode ? 0.5 : 0.2,
                     shadowRadius: 24,
                     paddingBottom: insets.bottom > 0 ? insets.bottom : 16,
                     paddingTop: 16,
                     height: (insets.bottom > 0 ? insets.bottom : 16) + 76,
                     borderTopLeftRadius: 30,
                     borderTopRightRadius: 30,
-                    borderTopColor: 'rgba(0, 0, 0, 0.08)',
-                   
                 },
                 tabBarItemStyle: {
                     paddingVertical: 8,

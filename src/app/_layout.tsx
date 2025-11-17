@@ -15,10 +15,18 @@ function AppContent() {
 
 export default function RootLayout() {
   return (
-    <TamaguiProvider config={config} defaultTheme="dark">
-      <ThemeProvider>
-        <AppContent />
-      </ThemeProvider>
+    <ThemeProvider>
+      <TamaguiWrapper />
+    </ThemeProvider>
+  );
+}
+
+function TamaguiWrapper() {
+  const { isDarkMode } = useThemeContext();
+
+  return (
+    <TamaguiProvider config={config} defaultTheme={isDarkMode ? "dark" : "light"}>
+      <AppContent />
     </TamaguiProvider>
   );
 }
