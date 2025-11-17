@@ -225,97 +225,136 @@ const EstoqueTab = () => {
             Resumo do Estoque
           </Text>
           
-          <YStack gap="$2">
-            <ListItem
-              backgroundColor={colors.cardBackground}
-              borderRadius="$3"
-              borderWidth={1}
-              borderColor={colors.border}
-              padding="$3"
-            >
-              <ListItem.Text>
-                <XStack alignItems="center" justifyContent="space-between" width="100%">
-                  <XStack alignItems="center" gap="$3">
-                    <Avatar circular size="$4" backgroundColor={colors.accent}>
+          <XStack gap="$2">
+            <YStack flex={1}>
+              <ListItem
+                backgroundColor={colors.cardBackground}
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor={colors.border}
+                padding="$3"
+                justifyContent="center"
+                alignItems="center"
+                {...(isAndroid && {
+                  elevation: isDarkMode ? 2 : 4,
+                })}
+                {...(!isAndroid && {
+                  shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: isDarkMode ? 0.1 : 0.1,
+                  shadowRadius: 3,
+                })}
+              >
+                <ListItem.Text>
+                  <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
+                    <Avatar circular size="$3" backgroundColor={colors.accent}>
                       <Avatar.Fallback 
                         backgroundColor={colors.accent}
                         justifyContent="center"
                         alignItems="center"
                       >
-                        <BarChart3 size={16} color={colors.text} />
+                        <BarChart3 size={14} color={colors.text} />
                       </Avatar.Fallback>
                     </Avatar>
-                    <Text fontSize={16} fontWeight="500" color={colors.text}>
-                      Total de Produtos
-                    </Text>
-                  </XStack>
-                  <Text fontSize={24} fontWeight="700" color={colors.text}>
-                    {totalProducts}
-                  </Text>
-                </XStack>
-              </ListItem.Text>
-            </ListItem>
+                    <YStack alignItems="center" gap="$1">
+                      <Text fontSize={12} fontWeight="500" color={colors.text} textAlign="center">
+                        Total
+                      </Text>
+                      <Text fontSize={18} fontWeight="700" color={colors.text}>
+                        {totalProducts}
+                      </Text>
+                    </YStack>
+                  </YStack>
+                </ListItem.Text>
+              </ListItem>
+            </YStack>
 
-            <ListItem
-              backgroundColor={colors.cardBackground}
-              borderRadius="$3"
-              borderWidth={1}
-              borderColor={colors.border}
-              padding="$3"
-            >
-              <ListItem.Text>
-                <XStack alignItems="center" justifyContent="space-between" width="100%">
-                  <XStack alignItems="center" gap="$3">
-                    <Avatar circular size="$4" backgroundColor={colors.warning}>
+            <YStack flex={1}>
+              <ListItem
+                backgroundColor={colors.cardBackground}
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor={colors.border}
+                padding="$3"
+                justifyContent="center"
+                alignItems="center"
+                {...(isAndroid && {
+                  elevation: isDarkMode ? 2 : 4,
+                })}
+                {...(!isAndroid && {
+                  shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: isDarkMode ? 0.1 : 0.1,
+                  shadowRadius: 3,
+                })}
+              >
+                <ListItem.Text>
+                  <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
+                    <Avatar circular size="$3" backgroundColor={colors.warning}>
                       <Avatar.Fallback 
                         backgroundColor={colors.warning}
                         justifyContent="center"
                         alignItems="center"
                       >
-                        <AlertTriangle size={16} color="white" />
+                        <AlertTriangle size={14} color="white" />
                       </Avatar.Fallback>
                     </Avatar>
-                    <Text fontSize={16} fontWeight="500" color={colors.text}>
-                      Estoque Baixo
-                    </Text>
-                  </XStack>
-                  <Text fontSize={24} fontWeight="700" color={colors.warning}>
-                    {lowStockProducts}
-                  </Text>
-                </XStack>
-              </ListItem.Text>
-            </ListItem>
+                    <YStack alignItems="center" gap="$1">
+                      <Text fontSize={12} fontWeight="500" color={colors.text} textAlign="center">
+                        Baixo
+                      </Text>
+                      <Text fontSize={18} fontWeight="700" color={colors.warning}>
+                        {lowStockProducts}
+                      </Text>
+                    </YStack>
+                  </YStack>
+                </ListItem.Text>
+              </ListItem>
+            </YStack>
 
-            <ListItem
-              backgroundColor={colors.cardBackground}
-              borderRadius="$3"
-              borderWidth={1}
-              borderColor={colors.border}
-              padding="$3"
-            >
-              <ListItem.Text>
-                <XStack alignItems="center" justifyContent="space-between" width="100%">
-                  <XStack alignItems="center" gap="$3">
-                    <Avatar circular size="$4" backgroundColor={colors.danger}>
+            <YStack flex={1}>
+              <ListItem
+                backgroundColor={colors.cardBackground}
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor={colors.border}
+                padding="$3"
+                justifyContent="center"
+                alignItems="center"
+                {...(isAndroid && {
+                  elevation: isDarkMode ? 2 : 4,
+                })}
+                {...(!isAndroid && {
+                  shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: isDarkMode ? 0.1 : 0.1,
+                  shadowRadius: 3,
+                })}
+              >
+                <ListItem.Text>
+                  <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
+                    <Avatar circular size="$3" backgroundColor={colors.danger}>
                       <Avatar.Fallback 
                         backgroundColor={colors.danger}
                         justifyContent="center"
                         alignItems="center"
                       >
-                        <TrendingDown size={16} color="white" />
+                        <TrendingDown size={14} color="white" />
                       </Avatar.Fallback>
                     </Avatar>
-                    <Text fontSize={16} fontWeight="500" color={colors.text}>
-                      Estoque Crítico
-                    </Text>
-                  </XStack>
-                  <Text fontSize={24} fontWeight="700" color={colors.danger}>
-                    {criticalProducts}
-                  </Text>
-                </XStack>
-              </ListItem.Text>
-            </ListItem>
-          </YStack>
+                    <YStack alignItems="center" gap="$1">
+                      <Text fontSize={12} fontWeight="500" color={colors.text} textAlign="center">
+                        Crítico
+                      </Text>
+                      <Text fontSize={18} fontWeight="700" color={colors.danger}>
+                        {criticalProducts}
+                      </Text>
+                    </YStack>
+                  </YStack>
+                </ListItem.Text>
+              </ListItem>
+            </YStack>
+          </XStack>
         </YStack>
 
         {/* Search Input */}

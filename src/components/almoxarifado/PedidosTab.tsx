@@ -220,124 +220,136 @@ const PedidosTab = () => {
           Status dos Pedidos
         </Text>
         
-        <YStack gap="$2">
-          <ListItem
-            backgroundColor={colors.cardBackground}
-            borderRadius="$3"
-            borderWidth={1}
-            borderColor={colors.border}
-            padding="$3"
-            {...(isAndroid && {
-              elevation: isDarkMode ? 2 : 4,
-            })}
-            {...(!isAndroid && {
-              shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: isDarkMode ? 0.1 : 0.1,
-              shadowRadius: 3,
-            })}
-          >
-            <ListItem.Text>
-              <XStack alignItems="center" justifyContent="space-between" width="100%">
-                <XStack alignItems="center" gap="$3">
-                  <Avatar circular size="$4" backgroundColor={colors.warning}>
+        <XStack gap="$2">
+          <YStack flex={1} ai={'center'}>
+            <ListItem
+              backgroundColor={colors.cardBackground}
+              borderRadius="$3"
+              borderWidth={1}
+              borderColor={colors.border}
+              padding="$3"
+              justifyContent="center"
+              alignItems="center"
+              {...(isAndroid && {
+                elevation: isDarkMode ? 2 : 4,
+              })}
+              {...(!isAndroid && {
+                shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: isDarkMode ? 0.1 : 0.1,
+                shadowRadius: 3,
+              })}
+            >
+              <ListItem.Text>
+                <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
+                  <Avatar circular size="$3" backgroundColor={colors.warning}>
                     <Avatar.Fallback 
                       backgroundColor={colors.warning}
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <Clock size={16} color="white" />
+                      <Clock size={14} color="white" />
                     </Avatar.Fallback>
                   </Avatar>
-                  <Text fontSize={16} fontWeight="500" color={colors.text}>
-                    Pendentes
-                  </Text>
-                </XStack>
-                <Text fontSize={20} fontWeight="700" color={colors.warning}>
-                  {mockPedidos.filter(p => p.status === 'pendente').length}
-                </Text>
-              </XStack>
-            </ListItem.Text>
-          </ListItem>
+                  <YStack alignItems="center" gap="$1">
+                    <Text fontSize={12} fontWeight="500" color={colors.text} textAlign="center">
+                      Pendentes
+                    </Text>
+                    <Text fontSize={18} fontWeight="700" color={colors.warning}>
+                      {mockPedidos.filter(p => p.status === 'pendente').length}
+                    </Text>
+                  </YStack>
+                </YStack>
+              </ListItem.Text>
+            </ListItem>
+          </YStack>
 
-          <ListItem
-            backgroundColor={colors.cardBackground}
-            borderRadius="$3"
-            borderWidth={1}
-            borderColor={colors.border}
-            padding="$3"
-            {...(isAndroid && {
-              elevation: isDarkMode ? 2 : 4,
-            })}
-            {...(!isAndroid && {
-              shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: isDarkMode ? 0.1 : 0.1,
-              shadowRadius: 3,
-            })}
-          >
-            <ListItem.Text>
-              <XStack alignItems="center" justifyContent="space-between" width="100%">
-                <XStack alignItems="center" gap="$3">
-                  <Avatar circular size="$4" backgroundColor={colors.info}>
+          <YStack flex={1}>
+            <ListItem
+              backgroundColor={colors.cardBackground}
+              borderRadius="$3"
+              borderWidth={1}
+              borderColor={colors.border}
+              padding="$3"
+              justifyContent="center"
+              alignItems="center"
+              {...(isAndroid && {
+                elevation: isDarkMode ? 2 : 4,
+              })}
+              {...(!isAndroid && {
+                shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: isDarkMode ? 0.1 : 0.1,
+                shadowRadius: 3,
+              })}
+            >
+              <ListItem.Text>
+                <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
+                  <Avatar circular size="$3" backgroundColor={colors.info}>
                     <Avatar.Fallback 
                       backgroundColor={colors.info}
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <CheckCircle size={16} color="white" />
+                      <CheckCircle size={14} color="white" />
                     </Avatar.Fallback>
                   </Avatar>
-                  <Text fontSize={16} fontWeight="500" color={colors.text}>
-                    Aprovados
-                  </Text>
-                </XStack>
-                <Text fontSize={20} fontWeight="700" color={colors.info}>
-                  {mockPedidos.filter(p => p.status === 'aprovado').length}
-                </Text>
-              </XStack>
-            </ListItem.Text>
-          </ListItem>
+                  <YStack alignItems="center" gap="$1">
+                    <Text fontSize={12} fontWeight="500" color={colors.text} textAlign="center">
+                      Aprovados
+                    </Text>
+                    <Text fontSize={18} fontWeight="700" color={colors.info}>
+                      {mockPedidos.filter(p => p.status === 'aprovado').length}
+                    </Text>
+                  </YStack>
+                </YStack>
+              </ListItem.Text>
+            </ListItem>
+          </YStack>
 
-          <ListItem
-            backgroundColor={colors.cardBackground}
-            borderRadius="$3"
-            borderWidth={1}
-            borderColor={colors.border}
-            padding="$3"
-            {...(isAndroid && {
-              elevation: isDarkMode ? 2 : 4,
-            })}
-            {...(!isAndroid && {
-              shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: isDarkMode ? 0.1 : 0.1,
-              shadowRadius: 3,
-            })}
-          >
-            <ListItem.Text>
-              <XStack alignItems="center" justifyContent="space-between" width="100%">
-                <XStack alignItems="center" gap="$3">
-                  <Avatar circular size="$4" backgroundColor={colors.primary}>
+          <YStack flex={1}>
+            <ListItem
+              backgroundColor={colors.cardBackground}
+              borderRadius="$3"
+              borderWidth={1}
+              borderColor={colors.border}
+              padding="$3"
+              justifyContent="center"
+              alignItems="center"
+              {...(isAndroid && {
+                elevation: isDarkMode ? 2 : 4,
+              })}
+              {...(!isAndroid && {
+                shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: isDarkMode ? 0.1 : 0.1,
+                shadowRadius: 3,
+              })}
+            >
+              <ListItem.Text>
+                <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
+                  <Avatar circular size="$3" backgroundColor={colors.primary}>
                     <Avatar.Fallback 
                       backgroundColor={colors.primary}
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <Package size={16} color="white" />
+                      <Package size={14} color="white" />
                     </Avatar.Fallback>
                   </Avatar>
-                  <Text fontSize={16} fontWeight="500" color={colors.text}>
-                    Entregues
-                  </Text>
-                </XStack>
-                <Text fontSize={20} fontWeight="700" color={colors.primary}>
-                  {mockPedidos.filter(p => p.status === 'entregue').length}
-                </Text>
-              </XStack>
-            </ListItem.Text>
-          </ListItem>
-        </YStack>
+                  <YStack alignItems="center" gap="$1">
+                    <Text fontSize={12} fontWeight="500" color={colors.text} textAlign="center">
+                      Entregues
+                    </Text>
+                    <Text fontSize={18} fontWeight="700" color={colors.primary}>
+                      {mockPedidos.filter(p => p.status === 'entregue').length}
+                    </Text>
+                  </YStack>
+                </YStack>
+              </ListItem.Text>
+            </ListItem>
+          </YStack>
+        </XStack>
       </YStack>
 
       {/* Lista de Pedidos */}
