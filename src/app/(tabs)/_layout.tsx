@@ -1,9 +1,10 @@
 import { Tabs } from 'expo-router/tabs';
 import { Home, Settings, User, Archive, Search } from '@tamagui/lucide-icons';
-import { YStack, Text } from "tamagui";
+import { YStack, Text, AnimatePresence } from "tamagui";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { Platform } from 'react-native';
+import { usePathname } from 'expo-router';
 
 interface TabIconProps {
     Icon: any;
@@ -12,8 +13,9 @@ interface TabIconProps {
     label: string;
 }
 
-const TabIcon = ({ Icon, color, isFocused, label }: TabIconProps) => {
+const TabIcon = ({ Icon, color, isFocused, label, tabIndex }: TabIconProps & { tabIndex: number }) => {
     const { isDarkMode } = useThemeContext();
+    const pathname = usePathname();
 
     const colors = {
         activeBackground: '#22C55E',
@@ -22,6 +24,18 @@ const TabIcon = ({ Icon, color, isFocused, label }: TabIconProps) => {
         inactiveIcon: isDarkMode ? '#A0A0A0' : '#6B7280',
         inactiveText: isDarkMode ? '#A0A0A0' : '#6B7280',
     };
+
+    // Calcular direção da animação baseado na mudança de tab
+    const getActiveTabIndex = () => {
+        if (pathname.includes('/Home')) return 0;
+        if (pathname.includes('/Clientes')) return 1;
+        if (pathname.includes('/Almoxarifado')) return 2;
+        if (pathname.includes('/Perfil')) return 3;
+        return 0;
+    };
+
+    const activeIndex = getActiveTabIndex();
+    const slideDirection = activeIndex > tabIndex ? -30 : 30;
 
     return (
         <YStack 
@@ -33,7 +47,7 @@ const TabIcon = ({ Icon, color, isFocused, label }: TabIconProps) => {
             width={70}
         >
             <YStack position="relative">
-                {/* Background animado para o ícone ativo */}
+                {/* Background com animação de slide simples */}
                 <YStack
                     position="absolute"
                     top={0}
@@ -44,6 +58,8 @@ const TabIcon = ({ Icon, color, isFocused, label }: TabIconProps) => {
                     borderRadius={16}
                     animation="slow"
                     opacity={isFocused ? 1 : 0}
+                    scale={isFocused ? 1 : 0.9}
+                    x={isFocused ? 0 : (activeIndex > tabIndex ? -15 : 15)}
                 />
                 
                 {/* Container do ícone */}
@@ -52,6 +68,7 @@ const TabIcon = ({ Icon, color, isFocused, label }: TabIconProps) => {
                     justifyContent="center"
                     paddingVertical={6}
                     paddingHorizontal={12}
+                    zIndex={2}
                 >
                     <Icon 
                         size={24} 
@@ -80,6 +97,7 @@ export default function TabsLayout() {
     const insets = useSafeAreaInsets();
     const { isDarkMode } = useThemeContext();
     const isAndroid = Platform.OS === 'android';
+    const pathname = usePathname();
 
     const colors = {
         tabBarBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
@@ -88,42 +106,54 @@ export default function TabsLayout() {
         inactiveTint: isDarkMode ? '#A0A0A0' : '#6B7280',
         shadowColor: isDarkMode ? '#000000' : '#000000',
     };
+
+    // Calcular a posição do indicador baseado na tab ativa
+    const getActiveTabIndex = () => {
+        if (pathname.includes('/Home')) return 0;
+        if (pathname.includes('/Clientes')) return 1;
+        if (pathname.includes('/Almoxarifado')) return 2;
+        if (pathname.includes('/Perfil')) return 3;
+        return 0;
+    };
+
+    const activeTabIndex = getActiveTabIndex();
+    const indicatorLeft = activeTabIndex * 25; // 25% por tab
     
     return (
         <Tabs
-            screenOptions={{
-                headerShown: false,
-                tabBarActiveTintColor: colors.activeTint,
-                tabBarInactiveTintColor: colors.inactiveTint,
-                tabBarStyle: {
-                    backgroundColor: colors.tabBarBackground,
-                    borderTopWidth: 1,
-                    borderTopColor: colors.tabBarBorder,
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    elevation: isAndroid ? 20 : 30,
-                    shadowColor: colors.shadowColor,
-                    shadowOffset: { 
-                        width: 0, 
-                        height: -8 
+                screenOptions={{
+                    headerShown: false,
+                    tabBarActiveTintColor: colors.activeTint,
+                    tabBarInactiveTintColor: colors.inactiveTint,
+                    tabBarStyle: {
+                        backgroundColor: colors.tabBarBackground,
+                        borderTopWidth: 1,
+                        borderTopColor: colors.tabBarBorder,
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        elevation: isAndroid ? 20 : 30,
+                        shadowColor: colors.shadowColor,
+                        shadowOffset: { 
+                            width: 0, 
+                            height: -8 
+                        },
+                        shadowOpacity: isDarkMode ? 0.5 : 0.2,
+                        shadowRadius: 24,
+                        paddingBottom: insets.bottom > 0 ? insets.bottom : 16,
+                        paddingTop: 16,
+                        height: (insets.bottom > 0 ? insets.bottom : 16) + 76,
+                        borderTopLeftRadius: 30,
+                        borderTopRightRadius: 30,
                     },
-                    shadowOpacity: isDarkMode ? 0.5 : 0.2,
-                    shadowRadius: 24,
-                    paddingBottom: insets.bottom > 0 ? insets.bottom : 16,
-                    paddingTop: 16,
-                    height: (insets.bottom > 0 ? insets.bottom : 16) + 76,
-                    borderTopLeftRadius: 30,
-                    borderTopRightRadius: 30,
-                },
-                tabBarItemStyle: {
-                    paddingVertical: 8,
-                },
-                tabBarShowLabel: false,
-                tabBarHideOnKeyboard: true,
-            }}
-        >
+                    tabBarItemStyle: {
+                        paddingVertical: 8,
+                    },
+                    tabBarShowLabel: false,
+                    tabBarHideOnKeyboard: true,
+                }}
+            >
             <Tabs.Screen
                 name='Home/index'
                 options={{
@@ -133,7 +163,8 @@ export default function TabsLayout() {
                             Icon={Home} 
                             color={color}
                             isFocused={focused} 
-                            label="Home" 
+                            label="Home"
+                            tabIndex={0}
                         />
                     )
                 }}
@@ -147,7 +178,8 @@ export default function TabsLayout() {
                             Icon={Search} 
                             color={color}
                             isFocused={focused} 
-                            label="buscar" 
+                            label="buscar"
+                            tabIndex={1}
                         />
                     )
                 }}
@@ -161,7 +193,8 @@ export default function TabsLayout() {
                             Icon={Archive} 
                             color={color}
                             isFocused={focused} 
-                            label="Estoque" 
+                            label="Estoque"
+                            tabIndex={2}
                         />
                     )
                 }}
@@ -175,7 +208,8 @@ export default function TabsLayout() {
                             Icon={User} 
                             color={color}
                             isFocused={focused} 
-                            label="Perfil" 
+                            label="Perfil"
+                            tabIndex={3}
                         />
                     )
                 }}

@@ -1,7 +1,8 @@
 import React from 'react';
-import { FlatList, Platform } from 'react-native';
+import { FlatList, Platform, TouchableOpacity } from 'react-native';
 import { YStack, XStack, Text, useTheme } from 'tamagui';
 import { useThemeContext } from '../../contexts/ThemeContext';
+import { useRouter } from 'expo-router';
 
 interface Order {
   id: string;
@@ -15,6 +16,7 @@ const OpenOrdersTab = () => {
   const theme = useTheme();
   const { isDarkMode } = useThemeContext();
   const isAndroid = Platform.OS === 'android';
+  const router = useRouter();
 
   const colors = {
     background: isDarkMode ? '#000000' : '#FFFFFF',
@@ -34,21 +36,23 @@ const OpenOrdersTab = () => {
   ];
 
   const renderItem = ({ item }: { item: Order }) => (
-    <YStack
-      bg={colors.cardBackground}
-      padding="$4"
-      borderRadius="$4"
-      borderWidth={1}
-      borderColor={colors.border}
-      marginBottom="$3"
-      shadowColor={isDarkMode ? "#000000" : "#000000"}
-      shadowOffset={{ width: 0, height: 2 }}
-      shadowOpacity={isDarkMode ? 0.5 : 0.1}
-      shadowRadius={4}
-      elevation={isAndroid ? 5 : 3}
-      pressStyle={{ opacity: 0.9 }}
-      cursor="pointer"
+    <TouchableOpacity
+      onPress={() => router.push(`/ordem-servico/${item.id}`)}
+      activeOpacity={0.8}
     >
+      <YStack
+        bg={colors.cardBackground}
+        padding="$4"
+        borderRadius="$4"
+        borderWidth={1}
+        borderColor={colors.border}
+        marginBottom="$3"
+        shadowColor={isDarkMode ? "#000000" : "#000000"}
+        shadowOffset={{ width: 0, height: 2 }}
+        shadowOpacity={isDarkMode ? 0.5 : 0.1}
+        shadowRadius={4}
+        elevation={isAndroid ? 5 : 3}
+      >
       <XStack justifyContent="space-between" alignItems="center" marginBottom="$2">
         <Text fontSize={16} fontWeight="700" color={colors.primary}>
           OS #{item.id}
@@ -74,6 +78,7 @@ const OpenOrdersTab = () => {
         Data: {item.date}
       </Text>
     </YStack>
+    </TouchableOpacity>
   );
 
   return (
