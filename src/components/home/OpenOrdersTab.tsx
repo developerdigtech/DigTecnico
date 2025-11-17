@@ -1,6 +1,7 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 import { YStack, XStack, Text, useTheme } from 'tamagui';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 interface Order {
   id: string;
@@ -12,15 +13,18 @@ interface Order {
 
 const OpenOrdersTab = () => {
   const theme = useTheme();
+  const { isDarkMode } = useThemeContext();
+  const isAndroid = Platform.OS === 'android';
 
   const colors = {
-   
-    cardBackground: theme.backgroundFocus.val,
-    text: theme.color.val,
-    secondaryText: theme.colorFocus.val,
+    background: isDarkMode ? '#000000' : '#FFFFFF',
+    cardBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
+    text: isDarkMode ? '#FFFFFF' : '#000000',
+    secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
+    border: isDarkMode ? '#333333' : '#E0E0E0',
     primary: '#007AFF',
-    warning: '#FF9500',
-    danger: '#FF3B30',
+    warning: '#F59E0B',
+    danger: '#EF4444',
   };
 
   const orders: Order[] = [
@@ -31,15 +35,17 @@ const OpenOrdersTab = () => {
 
   const renderItem = ({ item }: { item: Order }) => (
     <YStack
-     bg={"$gray1Dark"}
+      bg={colors.cardBackground}
       padding="$4"
       borderRadius="$4"
+      borderWidth={1}
+      borderColor={colors.border}
       marginBottom="$3"
-      shadowColor="#000"
+      shadowColor={isDarkMode ? "#000000" : "#000000"}
       shadowOffset={{ width: 0, height: 2 }}
-      shadowOpacity={0.1}
+      shadowOpacity={isDarkMode ? 0.5 : 0.1}
       shadowRadius={4}
-      elevation={3}
+      elevation={isAndroid ? 5 : 3}
       pressStyle={{ opacity: 0.9 }}
       cursor="pointer"
     >
@@ -71,15 +77,18 @@ const OpenOrdersTab = () => {
   );
 
   return (
-    <FlatList
-      data={orders}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={{
-        padding: 16,
-        paddingBottom: 100,
-      }}
-    />
+    <YStack flex={1} backgroundColor={colors.background}>
+      <FlatList
+        data={orders}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        style={{ backgroundColor: colors.background }}
+        contentContainerStyle={{
+          padding: 16,
+          paddingBottom: 100,
+        }}
+      />
+    </YStack>
   );
 };
 

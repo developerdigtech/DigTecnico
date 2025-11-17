@@ -1,22 +1,25 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Dimensions, Platform } from 'react-native';
 import { YStack, XStack, Text, useTheme, ListItem, Avatar } from 'tamagui';
 import { BarChart, PieChart, LineChart } from 'react-native-gifted-charts';
 import { Package, AlertTriangle, TrendingDown, BarChart3, ShoppingCart } from '@tamagui/lucide-icons';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 const DashboardTab = () => {
   const theme = useTheme();
-  const isDark = theme.background.val === '#000000' || theme.background.val === 'rgb(0, 0, 0)';
+  const { isDarkMode } = useThemeContext();
+  const { width: screenWidth } = Dimensions.get('window');
+  const isAndroid = Platform.OS === 'android';
 
   const colors = {
-    cardBackground: theme.backgroundFocus.val,
-    text: theme.color.val,
-    secondaryText: theme.colorFocus.val,
-    border: theme.borderColor.val,
+    cardBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
+    text: isDarkMode ? '#FFFFFF' : '#000000',
+    secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
+    border: isDarkMode ? '#333333' : '#E0E0E0',
     primary: '#007AFF',
-    success: '#34C759',
-    warning: '#FF9500',
-    danger: '#FF3B30',
+    success: '#22C55E',
+    warning: '#F59E0B',
+    danger: '#EF4444',
     accent: '#374151',
   };
 
@@ -29,10 +32,10 @@ const DashboardTab = () => {
   };
 
   const barData = [
-    { value: 15, label: 'Jan', frontColor: colors.primary },
-    { value: 30, label: 'Fev', frontColor: colors.primary },
-    { value: 26, label: 'Mar', frontColor: colors.primary },
-    { value: 40, label: 'Abr', frontColor: colors.primary },
+    { value: 15, label: 'Jan', frontColor: colors.primary, labelTextStyle: { color: colors.secondaryText, fontSize: 12 } },
+    { value: 30, label: 'Fev', frontColor: colors.primary, labelTextStyle: { color: colors.secondaryText, fontSize: 12 } },
+    { value: 26, label: 'Mar', frontColor: colors.primary, labelTextStyle: { color: colors.secondaryText, fontSize: 12 } },
+    { value: 40, label: 'Abr', frontColor: colors.primary, labelTextStyle: { color: colors.secondaryText, fontSize: 12 } },
   ];
 
   const pieData = [
@@ -87,78 +90,82 @@ const DashboardTab = () => {
       <YStack padding="$4" gap="$4" paddingBottom="$20">
     
        {/* Alertas Importantes do Estoque */}
-        <YStack gap="$2">
-          <Text fontSize={16} fontWeight="600" color={colors.text}>
+        <YStack gap="$3">
+          <Text fontSize={18} fontWeight="600" color={colors.text}>
             Alertas Importantes
           </Text>
           
           {stockData.criticalProducts > 0 && (
-            <ListItem
-              backgroundColor={`${colors.danger}15`}
+            <YStack
+              backgroundColor={isDarkMode ? `${colors.danger}20` : `${colors.danger}15`}
               borderRadius="$4"
-              borderWidth={1}
+              borderWidth={2}
               borderColor={colors.danger}
-              padding="$3"
-              pressTheme
+              padding="$4"
+              shadowColor={colors.danger}
+              shadowOffset={{ width: 0, height: 2 }}
+              shadowOpacity={0.2}
+              shadowRadius={4}
+              elevation={isAndroid ? 3 : 2}
             >
-              <ListItem.Text>
-                <XStack alignItems="center" gap="$3" width="100%">
-                  <Avatar circular size="$3" backgroundColor={colors.danger}>
-                    <Avatar.Fallback 
-                      backgroundColor={colors.danger}
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <AlertTriangle size={14} color="white" />
-                    </Avatar.Fallback>
-                  </Avatar>
-                  <YStack flex={1}>
-                    <Text fontSize={14} fontWeight="600" color={colors.danger}>
-                      Atenção: Estoque Crítico
-                    </Text>
-                    <Text fontSize={12} color={colors.secondaryText}>
-                      {stockData.criticalProducts} produto(s) com estoque muito baixo
-                    </Text>
-                  </YStack>
-                </XStack>
-              </ListItem.Text>
-            </ListItem>
+              <XStack alignItems="center" gap="$3" width="100%">
+                <YStack 
+                  width={40} 
+                  height={40} 
+                  borderRadius={20} 
+                  backgroundColor={colors.danger}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <AlertTriangle size={20} color="white" />
+                </YStack>
+                <YStack flex={1}>
+                  <Text fontSize={16} fontWeight="700" color={colors.danger}>
+                    Atenção: Estoque Crítico
+                  </Text>
+                  <Text fontSize={14} color={colors.text} marginTop="$1">
+                    {stockData.criticalProducts} produto(s) com estoque muito baixo
+                  </Text>
+                </YStack>
+              </XStack>
+            </YStack>
           )}
 
           {stockData.lowStockProducts > 0 && (
-            <ListItem
-              backgroundColor={`${colors.warning}15`}
+            <YStack
+              backgroundColor={isDarkMode ? `${colors.warning}20` : `${colors.warning}15`}
               borderRadius="$4"
-              borderWidth={1}
+              borderWidth={2}
               borderColor={colors.warning}
-              padding="$3"
-              pressTheme
+              padding="$4"
+              shadowColor={colors.warning}
+              shadowOffset={{ width: 0, height: 2 }}
+              shadowOpacity={0.2}
+              shadowRadius={4}
+              elevation={isAndroid ? 3 : 2}
             >
-              <ListItem.Text>
-                <XStack alignItems="center" gap="$3" width="100%">
-                  <Avatar circular size="$3" backgroundColor={colors.warning}>
-                    <Avatar.Fallback 
-                      backgroundColor={colors.warning}
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <Package size={14} color="white" />
-                    </Avatar.Fallback>
-                  </Avatar>
-                  <YStack flex={1}>
-                    <Text fontSize={14} fontWeight="600" color={colors.warning}>
-                      Reposição Necessária
-                    </Text>
-                    <Text fontSize={12} color={colors.secondaryText}>
-                      {stockData.lowStockProducts} produto(s) com estoque baixo
-                    </Text>
-                  </YStack>
-                </XStack>
-              </ListItem.Text>
-            </ListItem>
+              <XStack alignItems="center" gap="$3" width="100%">
+                <YStack 
+                  width={40} 
+                  height={40} 
+                  borderRadius={20} 
+                  backgroundColor={colors.warning}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Package size={20} color="white" />
+                </YStack>
+                <YStack flex={1}>
+                  <Text fontSize={16} fontWeight="700" color={colors.warning}>
+                    Reposição Necessária
+                  </Text>
+                  <Text fontSize={14} color={colors.text} marginTop="$1">
+                    {stockData.lowStockProducts} produto(s) com estoque baixo
+                  </Text>
+                </YStack>
+              </XStack>
+            </YStack>
           )}
-
-          
         </YStack>
 
       
@@ -170,6 +177,11 @@ const DashboardTab = () => {
           borderRadius="$4"
           borderWidth={1}
           borderColor={colors.border}
+          shadowColor={isDarkMode ? "#000000" : "#000000"}
+          shadowOffset={{ width: 0, height: 2 }}
+          shadowOpacity={isDarkMode ? 0.5 : 0.1}
+          shadowRadius={4}
+          elevation={isAndroid ? 5 : 3}
         >
           <Text 
             fontSize={18} 
@@ -183,19 +195,23 @@ const DashboardTab = () => {
             <PieChart
               data={stockPieData}
               donut
-              radius={70}
-              innerRadius={45}
+              radius={screenWidth > 400 ? 80 : 70}
+              innerRadius={screenWidth > 400 ? 50 : 45}
+              showText
+              textColor={colors.text}
+              textSize={12}
+              backgroundColor={colors.cardBackground}
               centerLabelComponent={() => (
                 <YStack alignItems="center">
                   <Text 
-                    fontSize={14} 
+                    fontSize={16} 
                     fontWeight="bold"
                     color={colors.text}
                   >
                     {stockData.totalProducts}
                   </Text>
                   <Text 
-                    fontSize={10} 
+                    fontSize={12} 
                     color={colors.secondaryText}
                   >
                     produtos
@@ -204,37 +220,37 @@ const DashboardTab = () => {
               )}
             />
           </YStack>
-          <XStack justifyContent="space-around" marginTop="$4">
-            <XStack alignItems="center" gap="$2">
+          <XStack justifyContent="space-around" marginTop="$4" flexWrap="wrap">
+            <XStack alignItems="center" gap="$2" marginBottom="$2">
               <YStack 
-                width={12} 
-                height={12} 
-                borderRadius={6} 
+                width={14} 
+                height={14} 
+                borderRadius={7} 
                 backgroundColor={colors.success}
               />
-              <Text fontSize={12} color={colors.secondaryText}>
+              <Text fontSize={14} fontWeight="500" color={colors.text}>
                 Normal
               </Text>
             </XStack>
-            <XStack alignItems="center" gap="$2">
+            <XStack alignItems="center" gap="$2" marginBottom="$2">
               <YStack 
-                width={12} 
-                height={12} 
-                borderRadius={6} 
+                width={14} 
+                height={14} 
+                borderRadius={7} 
                 backgroundColor={colors.warning}
               />
-              <Text fontSize={12} color={colors.secondaryText}>
+              <Text fontSize={14} fontWeight="500" color={colors.text}>
                 Baixo
               </Text>
             </XStack>
-            <XStack alignItems="center" gap="$2">
+            <XStack alignItems="center" gap="$2" marginBottom="$2">
               <YStack 
-                width={12} 
-                height={12} 
-                borderRadius={6} 
+                width={14} 
+                height={14} 
+                borderRadius={7} 
                 backgroundColor={colors.danger}
               />
-              <Text fontSize={12} color={colors.secondaryText}>
+              <Text fontSize={14} fontWeight="500" color={colors.text}>
                 Crítico
               </Text>
             </XStack>
@@ -247,14 +263,16 @@ const DashboardTab = () => {
 
         {/* Card Ordens por Mês */}
         <YStack
-          bg={"$gray1Dark"}
+          bg={colors.cardBackground}
           padding="$4"
           borderRadius="$4"
-          shadowColor="#000"
+          borderWidth={1}
+          borderColor={colors.border}
+          shadowColor={isDarkMode ? "#000000" : "#000000"}
           shadowOffset={{ width: 0, height: 2 }}
-          shadowOpacity={0.1}
+          shadowOpacity={isDarkMode ? 0.5 : 0.1}
           shadowRadius={4}
-          elevation={3}
+          elevation={isAndroid ? 5 : 3}
         >
           <Text 
             fontSize={18} 
@@ -264,29 +282,47 @@ const DashboardTab = () => {
           >
             Ordens de Serviço por Mês
           </Text>
-          <BarChart
+          <YStack alignItems="center" overflow="hidden">
+            <BarChart
             data={barData}
-            barWidth={40}
+            barWidth={screenWidth > 400 ? 40 : 32}
             barBorderRadius={4}
             frontColor={colors.primary}
             yAxisThickness={0}
-            xAxisThickness={0}
-            hideRules
-            xAxisLabelTextStyle={{ color: colors.secondaryText }}
-            yAxisTextStyle={{ color: colors.secondaryText }}
+            xAxisThickness={1}
+            xAxisColor={colors.border}
+            hideRules={false}
+            rulesColor={colors.border}
+            rulesType="solid"
+            backgroundColor={colors.cardBackground}
+            xAxisLabelTextStyle={{ 
+              color: colors.secondaryText, 
+              fontSize: 12,
+              fontWeight: '500'
+            }}
+            yAxisTextStyle={{ 
+              color: colors.secondaryText, 
+              fontSize: 12
+            }}
+            height={screenWidth > 400 ? 200 : 180}
+            width={screenWidth - 120}
+            spacing={screenWidth > 400 ? 25 : 20}
           />
+          </YStack>
         </YStack>
 
         {/* Card Status das Ordens */}
         <YStack
-          bg={"$gray1Dark"}
+          bg={colors.cardBackground}
           padding="$4"
           borderRadius="$4"
-          shadowColor="#000"
+          borderWidth={1}
+          borderColor={colors.border}
+          shadowColor={isDarkMode ? "#000000" : "#000000"}
           shadowOffset={{ width: 0, height: 2 }}
-          shadowOpacity={0.1}
+          shadowOpacity={isDarkMode ? 0.5 : 0.1}
           shadowRadius={4}
-          elevation={3}
+          elevation={isAndroid ? 5 : 3}
         >
           <Text 
             fontSize={18} 
@@ -300,66 +336,96 @@ const DashboardTab = () => {
             <PieChart
               data={pieData}
               donut
-              radius={80}
-              innerRadius={50}
+              radius={screenWidth > 400 ? 90 : 80}
+              innerRadius={screenWidth > 400 ? 60 : 50}
+              showText
+              textColor={colors.text}
+              textSize={14}
+              fontWeight="bold"
+              backgroundColor={colors.cardBackground}
               centerLabelComponent={() => (
-                <Text 
-                  fontSize={16} 
-                  fontWeight="bold"
-                  color={colors.text}
-                >
-                  Total
-                </Text>
+                <YStack alignItems="center">
+                  <Text 
+                    fontSize={18} 
+                    fontWeight="bold"
+                    color={colors.text}
+                  >
+                    Total
+                  </Text>
+                  <Text 
+                    fontSize={12} 
+                    color={colors.secondaryText}
+                  >
+                    ordens
+                  </Text>
+                </YStack>
               )}
             />
           </YStack>
-          <XStack justifyContent="space-around" marginTop="$4">
-            <XStack alignItems="center" gap="$2">
-              <YStack 
-                width={12} 
-                height={12} 
-                borderRadius={6} 
-                backgroundColor={colors.success}
-              />
-              <Text fontSize={12} color={colors.secondaryText}>
-                Finalizadas
+          <YStack gap="$3" marginTop="$4">
+            <XStack alignItems="center" justifyContent="space-between">
+              <XStack alignItems="center" gap="$3">
+                <YStack 
+                  width={16} 
+                  height={16} 
+                  borderRadius={8} 
+                  backgroundColor={colors.success}
+                />
+                <Text fontSize={14} fontWeight="500" color={colors.text}>
+                  Finalizadas
+                </Text>
+              </XStack>
+              <Text fontSize={16} fontWeight="bold" color={colors.success}>
+                54%
               </Text>
             </XStack>
-            <XStack alignItems="center" gap="$2">
-              <YStack 
-                width={12} 
-                height={12} 
-                borderRadius={6} 
-                backgroundColor={colors.warning}
-              />
-              <Text fontSize={12} color={colors.secondaryText}>
-                Em Andamento
+            <XStack alignItems="center" justifyContent="space-between">
+              <XStack alignItems="center" gap="$3">
+                <YStack 
+                  width={16} 
+                  height={16} 
+                  borderRadius={8} 
+                  backgroundColor={colors.warning}
+                />
+                <Text fontSize={14} fontWeight="500" color={colors.text}>
+                  Em Andamento
+                </Text>
+              </XStack>
+              <Text fontSize={16} fontWeight="bold" color={colors.warning}>
+                30%
               </Text>
             </XStack>
-            <XStack alignItems="center" gap="$2">
-              <YStack 
-                width={12} 
-                height={12} 
-                borderRadius={6} 
-                backgroundColor={colors.danger}
-              />
-              <Text fontSize={12} color={colors.secondaryText}>
-                Pendentes
+            <XStack alignItems="center" justifyContent="space-between">
+              <XStack alignItems="center" gap="$3">
+                <YStack 
+                  width={16} 
+                  height={16} 
+                  borderRadius={8} 
+                  backgroundColor={colors.danger}
+                />
+                <Text fontSize={14} fontWeight="500" color={colors.text}>
+                  Pendentes
+                </Text>
+              </XStack>
+              <Text fontSize={16} fontWeight="bold" color={colors.danger}>
+                16%
               </Text>
             </XStack>
-          </XStack>
+          </YStack>
         </YStack>
 
         {/* Card Tendência Semanal */}
         <YStack
-          bg={"$gray1Dark"}
+          bg={colors.cardBackground}
           padding="$4"
           borderRadius="$4"
-          shadowColor="#000"
+          borderWidth={1}
+          borderColor={colors.border}
+          shadowColor={isDarkMode ? "#000000" : "#000000"}
           shadowOffset={{ width: 0, height: 2 }}
-          shadowOpacity={0.1}
+          shadowOpacity={isDarkMode ? 0.5 : 0.1}
           shadowRadius={4}
-          elevation={3}
+          elevation={isAndroid ? 5 : 3}
           marginBottom="$4"
         >
           <Text 
@@ -370,22 +436,35 @@ const DashboardTab = () => {
           >
             Tendência Semanal
           </Text>
-          <LineChart
-            data={lineData}
+          <YStack alignItems="center" overflow="hidden">
+            <LineChart
+            data={areaData}
             color={colors.primary}
             thickness={3}
             curved
-            hideRules
+            hideRules={false}
+            rulesColor={colors.border}
             hideYAxisText
             yAxisThickness={0}
-            xAxisThickness={0}
+            xAxisThickness={1}
+            xAxisColor={colors.border}
+            backgroundColor={colors.cardBackground}
+            xAxisLabelTextStyle={{ 
+              color: colors.secondaryText, 
+              fontSize: 12,
+              fontWeight: '500'
+            }}
             dataPointsColor={colors.primary}
+            dataPointsRadius={4}
             areaChart
             startFillColor={colors.primary}
             endFillColor={`${colors.primary}30`}
             startOpacity={0.6}
             endOpacity={0.1}
+            height={screenWidth > 400 ? 180 : 160}
+            width={screenWidth - 120}
           />
+          </YStack>
         </YStack>
       </YStack>
     </ScrollView>
