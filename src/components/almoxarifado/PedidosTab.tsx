@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ScrollView, Modal, Pressable, View, Dimensions } from 'react-native';
+import { ScrollView, Modal, Pressable, View, Dimensions, Platform } from 'react-native';
 import { YStack, XStack, Text, Input, Button, TextArea, ListItem, Avatar, Separator } from 'tamagui';
 import { Plus, Send, Package, Clock, CheckCircle, XCircle, ArrowUp, ArrowDown, X, Eye } from '@tamagui/lucide-icons';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 interface PedidoItem {
   id: number;
@@ -18,6 +19,7 @@ interface PedidoItem {
 }
 
 const PedidosTab = () => {
+  const { isDarkMode } = useThemeContext();
   const [activeTab, setActiveTab] = useState<'pedidos' | 'novo'>('pedidos');
   const [selectedPedido, setSelectedPedido] = useState<PedidoItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,15 +31,16 @@ const PedidosTab = () => {
     tipo: 'entrada' as 'entrada' | 'saida',
     destinatario: '',
   });
+  const isAndroid = Platform.OS === 'android';
 
   const colors = {
-    cardBackground: '#111111',
-    text: '#FFFFFF',
-    secondaryText: '#9CA3AF',
-    background: '#000000',
+    cardBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
+    text: isDarkMode ? '#FFFFFF' : '#000000',
+    secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
+    background: isDarkMode ? '#000000' : '#F8F9FA',
     primary: '#22C55E',
-    border: '#1F1F1F',
-    accent: '#374151',
+    border: isDarkMode ? '#333333' : '#E0E0E0',
+    accent: isDarkMode ? '#374151' : '#F3F4F6',
     warning: '#F59E0B',
     danger: '#EF4444',
     info: '#3B82F6',
@@ -159,6 +162,15 @@ const PedidosTab = () => {
       borderColor={colors.border}
       padding="$3"
       onPress={() => handleOpenPedidoDetails(pedido)}
+      {...(isAndroid && {
+        elevation: isDarkMode ? 2 : 4,
+      })}
+      {...(!isAndroid && {
+        shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: isDarkMode ? 0.1 : 0.1,
+        shadowRadius: 3,
+      })}
     >
       <ListItem.Text>
         <XStack alignItems="center" justifyContent="space-between" width="100%">
@@ -215,6 +227,15 @@ const PedidosTab = () => {
             borderWidth={1}
             borderColor={colors.border}
             padding="$3"
+            {...(isAndroid && {
+              elevation: isDarkMode ? 2 : 4,
+            })}
+            {...(!isAndroid && {
+              shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: isDarkMode ? 0.1 : 0.1,
+              shadowRadius: 3,
+            })}
           >
             <ListItem.Text>
               <XStack alignItems="center" justifyContent="space-between" width="100%">
@@ -245,6 +266,15 @@ const PedidosTab = () => {
             borderWidth={1}
             borderColor={colors.border}
             padding="$3"
+            {...(isAndroid && {
+              elevation: isDarkMode ? 2 : 4,
+            })}
+            {...(!isAndroid && {
+              shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: isDarkMode ? 0.1 : 0.1,
+              shadowRadius: 3,
+            })}
           >
             <ListItem.Text>
               <XStack alignItems="center" justifyContent="space-between" width="100%">
@@ -275,6 +305,15 @@ const PedidosTab = () => {
             borderWidth={1}
             borderColor={colors.border}
             padding="$3"
+            {...(isAndroid && {
+              elevation: isDarkMode ? 2 : 4,
+            })}
+            {...(!isAndroid && {
+              shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: isDarkMode ? 0.1 : 0.1,
+              shadowRadius: 3,
+            })}
           >
             <ListItem.Text>
               <XStack alignItems="center" justifyContent="space-between" width="100%">
@@ -500,10 +539,15 @@ const PedidosTab = () => {
                 borderTopRightRadius={24}
                 height="90%"
                 maxHeight="90%"
-                shadowColor="$shadowColor"
-                shadowOffset={{ width: 0, height: -4 }}
-                shadowOpacity={0.15}
-                shadowRadius={12}
+                {...(isAndroid && {
+                  elevation: 25,
+                })}
+                {...(!isAndroid && {
+                  shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                  shadowOffset: { width: 0, height: -8 },
+                  shadowOpacity: isDarkMode ? 0.2 : 0.25,
+                  shadowRadius: 20,
+                })}
                 overflow="hidden"
               >
                 {/* Handle melhorado */}
@@ -569,6 +613,15 @@ const PedidosTab = () => {
                       borderColor={colors.border}
                       padding="$3"
                       gap="$2"
+                      {...(isAndroid && {
+                        elevation: isDarkMode ? 3 : 5,
+                      })}
+                      {...(!isAndroid && {
+                        shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                        shadowOffset: { width: 0, height: 3 },
+                        shadowOpacity: isDarkMode ? 0.15 : 0.15,
+                        shadowRadius: 4,
+                      })}
                     >
                       <XStack gap="$3" alignItems="center">
                         <Avatar circular size="$5" backgroundColor={getStatusColor(selectedPedido.status)}>
@@ -643,6 +696,15 @@ const PedidosTab = () => {
                       borderColor={colors.border}
                       padding="$3"
                       gap="$2"
+                      {...(isAndroid && {
+                        elevation: isDarkMode ? 2 : 4,
+                      })}
+                      {...(!isAndroid && {
+                        shadowColor: isDarkMode ? '#FFFFFF' : '#000000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: isDarkMode ? 0.1 : 0.1,
+                        shadowRadius: 3,
+                      })}
                     >
                       <Text fontSize={14} fontWeight="600" color={colors.text}>
                         Informações do Produto

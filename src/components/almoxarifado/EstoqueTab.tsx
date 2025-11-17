@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Platform } from 'react-native';
 import { YStack, XStack, Text, Input, Button, ListItem, Separator, Avatar } from 'tamagui';
 import { Search, Package, AlertTriangle, TrendingUp, TrendingDown, Eye, Edit3, BarChart3 } from '@tamagui/lucide-icons';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 interface Product {
   id: number;
@@ -17,18 +18,20 @@ interface Product {
 }
 
 const EstoqueTab = () => {
+  const { isDarkMode } = useThemeContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const isAndroid = Platform.OS === 'android';
 
   const colors = {
-    cardBackground: '#111111',
-    text: '#FFFFFF',
-    secondaryText: '#9CA3AF',
-    background: '#000000',
+    cardBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
+    text: isDarkMode ? '#FFFFFF' : '#000000',
+    secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
+    background: isDarkMode ? '#000000' : '#F8F9FA',
     primary: '#22C55E',
-    border: '#1F1F1F',
-    accent: '#374151',
+    border: isDarkMode ? '#333333' : '#E0E0E0',
+    accent: isDarkMode ? '#374151' : '#F3F4F6',
     warning: '#F59E0B',
     danger: '#EF4444',
   };
