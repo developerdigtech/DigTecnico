@@ -202,7 +202,7 @@ const Relatorios = () => {
       style={{ flex: 1, backgroundColor: colors.background }}
       showsVerticalScrollIndicator={false}
     >
-      <YStack padding="$5" gap="$5" backgroundColor={colors.background}>
+      <YStack padding="$5" gap="$5" backgroundColor={colors.background} paddingBottom="$20">
         {/* Header Clean */}
         <YStack gap="$2" ai={'center'}>
           <Text 

@@ -81,7 +81,7 @@ const ClosedOrdersTab = () => {
       keyExtractor={(item) => item.id}
       contentContainerStyle={{
         padding: 16,
-        
+        paddingBottom: 100,
       }}
     />
   );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
-import { YStack, XStack, Text, Input, Button } from 'tamagui';
-import { Search, Package, AlertTriangle, TrendingUp, TrendingDown, Eye, Edit3 } from '@tamagui/lucide-icons';
+import { YStack, XStack, Text, Input, Button, ListItem, Separator, Avatar } from 'tamagui';
+import { Search, Package, AlertTriangle, TrendingUp, TrendingDown, Eye, Edit3, BarChart3 } from '@tamagui/lucide-icons';
 
 interface Product {
   id: number;
@@ -119,115 +119,80 @@ const EstoqueTab = () => {
     }
   };
 
-  const ProductCard = ({ product }: { product: Product }) => (
-    <YStack
+  const ProductListItem = ({ product }: { product: Product }) => (
+    <ListItem
+      hoverTheme
+      pressTheme
       backgroundColor={colors.cardBackground}
-      padding="$4"
-      borderRadius="$3"
-      marginBottom="$3"
+      borderRadius="$4"
+      marginBottom="$2"
       borderWidth={1}
       borderColor={colors.border}
+      onPress={() => console.log('Ver detalhes', product.id)}
     >
-      <YStack gap="$3">
-        {/* Header do Produto */}
-        <XStack alignItems="center" justifyContent="space-between">
-          <YStack flex={1}>
-            <Text fontSize={18} fontWeight="600" color={colors.text}>
-              {product.nome}
+      <ListItem.Text>
+        <XStack alignItems="center" justifyContent="space-between" width="100%">
+          {/* Avatar com ícone da categoria */}
+          <XStack alignItems="center" gap="$3" flex={1}>
+            <Avatar circular size="$6" backgroundColor={getStatusColor(product.status)}>
+              <Avatar.Image src={undefined} />
+              <Avatar.Fallback 
+                backgroundColor={getStatusColor(product.status)}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Package size={20} color="white" />
+              </Avatar.Fallback>
+            </Avatar>
+
+            <YStack flex={1} gap="$1">
+              <Text fontSize={16} fontWeight="600" color={colors.text}>
+                {product.nome}
+              </Text>
+              <XStack alignItems="center" gap="$2">
+                <Text fontSize={12} color={colors.secondaryText}>
+                  {product.codigo}
+                </Text>
+                <Text fontSize={12} color={colors.secondaryText}>•</Text>
+                <Text fontSize={12} color={colors.secondaryText}>
+                  {product.categoria}
+                </Text>
+              </XStack>
+              <XStack alignItems="center" gap="$2">
+                <Package size={12} color={colors.secondaryText} />
+                <Text fontSize={11} color={colors.secondaryText}>
+                  {product.localizacao}
+                </Text>
+              </XStack>
+            </YStack>
+          </XStack>
+
+          {/* Informações numéricas */}
+          <YStack alignItems="flex-end" gap="$1" minWidth={80}>
+            <XStack alignItems="center" gap="$2">
+              <Text fontSize={18} fontWeight="700" color={colors.text}>
+                {product.quantidade}
+              </Text>
+              <Text fontSize={12} color={colors.secondaryText}>
+                {product.unidade}
+              </Text>
+            </XStack>
+            
+            <Text fontSize={12} color={colors.primary}>
+              R$ {product.preco.toFixed(2)}/{product.unidade}
             </Text>
-            <XStack alignItems="center" gap="$2" marginTop="$1">
-              <Text fontSize={12} color={colors.secondaryText}>
-                {product.codigo}
-              </Text>
-              <Text fontSize={12} color={colors.secondaryText}>
-                •
-              </Text>
-              <Text fontSize={12} color={colors.secondaryText}>
-                {product.categoria}
+            
+            <XStack alignItems="center" justifyContent="center" gap="$1">
+              {getStatusIcon(product.status)}
+              <Text fontSize={10} color={getStatusColor(product.status)} textAlign="center">
+                {product.status === 'critico' ? 'Crítico' : 
+                 product.status === 'baixo' ? 'Baixo' : 'OK'}
               </Text>
             </XStack>
           </YStack>
-          
-          <YStack alignItems="center" gap="$1">
-            {getStatusIcon(product.status)}
-            <Text fontSize={10} color={getStatusColor(product.status)}>
-              {product.status === 'critico' ? 'Crítico' : 
-               product.status === 'baixo' ? 'Baixo' : 'Normal'}
-            </Text>
-          </YStack>
         </XStack>
-
-        {/* Informações de Estoque */}
-        <XStack gap="$4">
-          <YStack flex={1}>
-            <Text fontSize={24} fontWeight="700" color={colors.text}>
-              {product.quantidade}
-            </Text>
-            <Text fontSize={12} color={colors.secondaryText}>
-              {product.unidade} disponível
-            </Text>
-          </YStack>
-          
-          <YStack flex={1}>
-            <Text fontSize={16} fontWeight="500" color={colors.secondaryText}>
-              Min: {product.minimo}
-            </Text>
-            <Text fontSize={12} color={colors.secondaryText}>
-              estoque mínimo
-            </Text>
-          </YStack>
-          
-          <YStack flex={1}>
-            <Text fontSize={16} fontWeight="500" color={colors.primary}>
-              R$ {product.preco.toFixed(2)}
-            </Text>
-            <Text fontSize={12} color={colors.secondaryText}>
-              por {product.unidade}
-            </Text>
-          </YStack>
-        </XStack>
-
-        {/* Localização */}
-        <XStack alignItems="center" gap="$2">
-          <Package size={14} color={colors.secondaryText} />
-          <Text fontSize={12} color={colors.secondaryText}>
-            Localização: {product.localizacao}
-          </Text>
-        </XStack>
-
-        {/* Ações */}
-        <XStack gap="$2" marginTop="$2">
-          <Button 
-            flex={1} 
-            size="$2" 
-            backgroundColor={colors.primary}
-            color="white"
-            borderRadius="$2"
-            onPress={() => console.log('Ver detalhes', product.id)}
-          >
-            <XStack alignItems="center" gap="$1">
-              <Eye size={14} />
-              <Text color="white" fontSize={12}>Ver</Text>
-            </XStack>
-          </Button>
-          <Button 
-            flex={1} 
-            size="$2" 
-            backgroundColor="transparent"
-            borderWidth={1}
-            borderColor={colors.border}
-            color={colors.text}
-            borderRadius="$2"
-            onPress={() => console.log('Editar', product.id)}
-          >
-            <XStack alignItems="center" gap="$1">
-              <Edit3 size={14} />
-              <Text color={colors.text} fontSize={12}>Editar</Text>
-            </XStack>
-          </Button>
-        </XStack>
-      </YStack>
-    </YStack>
+      </ListItem.Text>
+    </ListItem>
   );
 
   // Estatísticas rápidas
@@ -240,7 +205,7 @@ const EstoqueTab = () => {
       style={{ flex: 1, backgroundColor: colors.background }}
       showsVerticalScrollIndicator={false}
     >
-      <YStack padding="$4" gap="$4" backgroundColor={colors.background}>
+      <YStack padding="$4" gap="$4" backgroundColor={colors.background} paddingBottom="$20">
         {/* Header */}
         <YStack gap="$2" alignItems="center">
           <Text fontSize={24} fontWeight="800" color={colors.text}>
@@ -252,67 +217,118 @@ const EstoqueTab = () => {
         </YStack>
 
         {/* Estatísticas Rápidas */}
-        <XStack gap="$3">
-          <YStack 
-            flex={1} 
-            backgroundColor={colors.cardBackground} 
-            padding="$3" 
-            borderRadius="$3" 
-            borderWidth={1} 
-            borderColor={colors.border}
-          >
-            <YStack alignItems="center" gap="$1">
-              <Text fontSize={20} fontWeight="700" color={colors.text}>{totalProducts}</Text>
-              <Text fontSize={11} color={colors.secondaryText}>Total</Text>
-            </YStack>
-          </YStack>
+        <YStack gap="$2">
+          <Text fontSize={14} fontWeight="500" color={colors.text}>
+            Resumo do Estoque
+          </Text>
           
-          <YStack 
-            flex={1} 
-            backgroundColor={colors.cardBackground} 
-            padding="$3" 
-            borderRadius="$3" 
-            borderWidth={1} 
-            borderColor={colors.border}
-          >
-            <YStack alignItems="center" gap="$1">
-              <Text fontSize={20} fontWeight="700" color={colors.warning}>{lowStockProducts}</Text>
-              <Text fontSize={11} color={colors.secondaryText}>Baixo</Text>
-            </YStack>
+          <YStack gap="$2">
+            <ListItem
+              backgroundColor={colors.cardBackground}
+              borderRadius="$3"
+              borderWidth={1}
+              borderColor={colors.border}
+              padding="$3"
+            >
+              <ListItem.Text>
+                <XStack alignItems="center" justifyContent="space-between" width="100%">
+                  <XStack alignItems="center" gap="$3">
+                    <Avatar circular size="$4" backgroundColor={colors.accent}>
+                      <Avatar.Fallback 
+                        backgroundColor={colors.accent}
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <BarChart3 size={16} color={colors.text} />
+                      </Avatar.Fallback>
+                    </Avatar>
+                    <Text fontSize={16} fontWeight="500" color={colors.text}>
+                      Total de Produtos
+                    </Text>
+                  </XStack>
+                  <Text fontSize={24} fontWeight="700" color={colors.text}>
+                    {totalProducts}
+                  </Text>
+                </XStack>
+              </ListItem.Text>
+            </ListItem>
+
+            <ListItem
+              backgroundColor={colors.cardBackground}
+              borderRadius="$3"
+              borderWidth={1}
+              borderColor={colors.border}
+              padding="$3"
+            >
+              <ListItem.Text>
+                <XStack alignItems="center" justifyContent="space-between" width="100%">
+                  <XStack alignItems="center" gap="$3">
+                    <Avatar circular size="$4" backgroundColor={colors.warning}>
+                      <Avatar.Fallback 
+                        backgroundColor={colors.warning}
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <AlertTriangle size={16} color="white" />
+                      </Avatar.Fallback>
+                    </Avatar>
+                    <Text fontSize={16} fontWeight="500" color={colors.text}>
+                      Estoque Baixo
+                    </Text>
+                  </XStack>
+                  <Text fontSize={24} fontWeight="700" color={colors.warning}>
+                    {lowStockProducts}
+                  </Text>
+                </XStack>
+              </ListItem.Text>
+            </ListItem>
+
+            <ListItem
+              backgroundColor={colors.cardBackground}
+              borderRadius="$3"
+              borderWidth={1}
+              borderColor={colors.border}
+              padding="$3"
+            >
+              <ListItem.Text>
+                <XStack alignItems="center" justifyContent="space-between" width="100%">
+                  <XStack alignItems="center" gap="$3">
+                    <Avatar circular size="$4" backgroundColor={colors.danger}>
+                      <Avatar.Fallback 
+                        backgroundColor={colors.danger}
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <TrendingDown size={16} color="white" />
+                      </Avatar.Fallback>
+                    </Avatar>
+                    <Text fontSize={16} fontWeight="500" color={colors.text}>
+                      Estoque Crítico
+                    </Text>
+                  </XStack>
+                  <Text fontSize={24} fontWeight="700" color={colors.danger}>
+                    {criticalProducts}
+                  </Text>
+                </XStack>
+              </ListItem.Text>
+            </ListItem>
           </YStack>
-          
-          <YStack 
-            flex={1} 
-            backgroundColor={colors.cardBackground} 
-            padding="$3" 
-            borderRadius="$3" 
-            borderWidth={1} 
-            borderColor={colors.border}
-          >
-            <YStack alignItems="center" gap="$1">
-              <Text fontSize={20} fontWeight="700" color={colors.danger}>{criticalProducts}</Text>
-              <Text fontSize={11} color={colors.secondaryText}>Crítico</Text>
-            </YStack>
-          </YStack>
-        </XStack>
+        </YStack>
 
         {/* Search Input */}
-        <XStack gap="$3" alignItems="center">
-          <YStack
-            flex={1}
-            backgroundColor={colors.cardBackground}
-            borderRadius="$8"
-            borderWidth={1}
-            borderColor={colors.border}
-            height={48}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <XStack alignItems="center" padding="$3" gap="$2">
+        <ListItem
+          backgroundColor={colors.cardBackground}
+          borderRadius="$4"
+          borderWidth={1}
+          borderColor={colors.border}
+          padding="$3"
+        >
+          <ListItem.Text>
+            <XStack alignItems="center" gap="$3" width="100%">
               <Search size={18} color={colors.secondaryText} />
               <Input
                 flex={1}
-                placeholder="Buscar produto"
+                placeholder="Buscar produtos por nome, código ou categoria"
                 placeholderTextColor={colors.secondaryText}
                 color={colors.text}
                 borderWidth={0}
@@ -322,22 +338,20 @@ const EstoqueTab = () => {
                 fontSize={14}
                 onSubmitEditing={performSearch}
               />
+              <Button
+                backgroundColor={colors.primary}
+                size="$3"
+                borderRadius="$2"
+                pressStyle={{ scale: 0.95 }}
+                onPress={performSearch}
+              >
+                <Text color="white" fontSize={12} fontWeight="600">
+                  Buscar
+                </Text>
+              </Button>
             </XStack>
-          </YStack>
-
-          <Button
-            backgroundColor={colors.primary}
-            width={48}
-            height={48}
-            borderRadius={24}
-            alignItems="center"
-            justifyContent="center"
-            pressStyle={{ scale: 0.95 }}
-            onPress={performSearch}
-          >
-            <Search size={20} color="white" />
-          </Button>
-        </XStack>
+          </ListItem.Text>
+        </ListItem>
 
         {/* Lista de Produtos */}
         {hasSearched ? (
@@ -347,9 +361,16 @@ const EstoqueTab = () => {
             </Text>
 
             {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))
+              <YStack gap="$1">
+                {filteredProducts.map((product, index) => (
+                  <React.Fragment key={product.id}>
+                    <ProductListItem product={product} />
+                    {index < filteredProducts.length - 1 && (
+                      <Separator marginVertical="$1" borderColor={colors.border} />
+                    )}
+                  </React.Fragment>
+                ))}
+              </YStack>
             ) : (
               <YStack
                 backgroundColor={colors.cardBackground}
@@ -379,9 +400,16 @@ const EstoqueTab = () => {
               Produtos em estoque
             </Text>
             
-            {mockProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            <YStack gap="$1">
+              {mockProducts.map((product, index) => (
+                <React.Fragment key={product.id}>
+                  <ProductListItem product={product} />
+                  {index < mockProducts.length - 1 && (
+                    <Separator marginVertical="$1" borderColor={colors.border} />
+                  )}
+                </React.Fragment>
+              ))}
+            </YStack>
           </YStack>
         )}
       </YStack>

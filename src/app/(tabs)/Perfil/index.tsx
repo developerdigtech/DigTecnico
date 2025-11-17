@@ -6,16 +6,17 @@ import { router } from "expo-router";
 import NetInfo from '@react-native-community/netinfo';
 import * as Location from 'expo-location';
 import { Platform } from 'react-native';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 
 export default function Perfil() {
-    const [isDarkMode, setIsDarkMode] = useState(true);
+    const { isDarkMode, toggleTheme } = useThemeContext();
     const [networkInfo, setNetworkInfo] = useState<any>(null);
     const [isNetworkExpanded, setIsNetworkExpanded] = useState(false);
     const [locationPermission, setLocationPermission] = useState(false);
     const insets = useSafeAreaInsets();
 
     const handleThemeToggle = () => {
-        setIsDarkMode(!isDarkMode);
+        toggleTheme();
     };
 
     // Solicita permissão de localização (necessário para SSID no iOS)
@@ -58,15 +59,14 @@ export default function Perfil() {
     };
 
     return (
-        <Theme name={isDarkMode ? "dark" : "light"}>
-            <YStack 
-                flex={1} 
-                backgroundColor="$background" 
-                paddingHorizontal="$4" 
-                paddingTop={insets.top + 12} 
-                paddingBottom={insets.bottom + 80} 
-                gap="$2"
-            >
+        <YStack 
+            flex={1} 
+            backgroundColor="$background" 
+            paddingHorizontal="$4" 
+            paddingTop={insets.top + 12} 
+            paddingBottom={insets.bottom + 80} 
+            gap="$2"
+        >
                 {/* Avatar e Nome */}
                 <YStack alignItems="center" gap="$2" marginVertical="$2">
                     <YStack position="relative">
@@ -107,7 +107,7 @@ export default function Perfil() {
                 
                 {/* Card de Informações do Usuário */}
                 <Card
-                    backgroundColor="$gray3"
+                    backgroundColor="$backgroundHover"
                     borderRadius="$4"
                     padding="$3"
                     borderWidth={1}
@@ -145,7 +145,7 @@ export default function Perfil() {
 
                 {/* Informações da Rede - Acordeão */}
                 <Card
-                    backgroundColor="$gray3"
+                    backgroundColor="$backgroundHover"
                     borderRadius="$4"
                     padding="$3"
                     borderWidth={1}
@@ -248,6 +248,5 @@ export default function Perfil() {
                     )}
                 </Card>
             </YStack>
-        </Theme>
     );
 }
