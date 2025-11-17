@@ -27,6 +27,8 @@ export default function OrdemServicoDetalhes() {
   const { isDarkMode } = useThemeContext();
   const isAndroid = Platform.OS === 'android';
   const [activeTab, setActiveTab] = useState('os');
+  const [isCheckedIn, setIsCheckedIn] = useState(false);
+  const [osStatus, setOsStatus] = useState('Pendente');
 
   const colors = {
     background: isDarkMode ? '#000000' : '#F8F9FA',
@@ -55,7 +57,7 @@ export default function OrdemServicoDetalhes() {
     longitude: '-42.247145',
     telefone: '(31) 99755-0265',
     descricao: 'Ir ao local recolher o equipamento. Caso cliente queira reativar, basta pagar o último boleto.',
-    status: 'Pendente',
+    status: osStatus,
     data: '17/11/2025',
     hora: '17:31'
   };
@@ -129,6 +131,13 @@ export default function OrdemServicoDetalhes() {
     { id: 'acoes', label: 'AÇÕES', icon: Settings },
     { id: 'almoxarifado', label: 'ALMOXARIFADO', icon: Archive }
   ];
+
+  // Função para realizar check-in
+  const handleCheckIn = () => {
+    setIsCheckedIn(true);
+    setOsStatus('Em andamento');
+    console.log('Check-in realizado para OS:', osData.id);
+  };
 
   const InfoCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <YStack
@@ -317,54 +326,107 @@ export default function OrdemServicoDetalhes() {
   };
 
   // Componente para renderizar ações
-  const AcoesTab = () => (
-    <YStack>
-      {acoesData.map((acao, index) => (
-        <TouchableOpacity key={index} style={{ marginBottom: 12 }}>
-          <XStack
-            backgroundColor={colors.cardBackground}
-            padding="$4"
+  const AcoesTab = () => {
+    // Ações que ficam inativas antes do check-in
+    const acoesBloqueadas = ['Ativar contrato de Internet', 'Adicionar anotação à O.S'];
+    
+    return (
+      <YStack>
+        {acoesData.map((acao, index) => {
+          const isBlocked = !isCheckedIn && acoesBloqueadas.some(bloqueada => acao.titulo.includes(bloqueada.split(' ')[0]));
+          
+          return (
+            <TouchableOpacity 
+              key={index} 
+              style={{ marginBottom: 12 }}
+              disabled={isBlocked}
+            >
+              <XStack
+                backgroundColor={isBlocked ? colors.border : colors.cardBackground}
+                padding="$4"
+                borderRadius="$4"
+                borderWidth={1}
+                borderColor={colors.border}
+                alignItems="center"
+                gap="$3"
+                shadowColor={isDarkMode ? "#000000" : "#000000"}
+                shadowOffset={{ width: 0, height: 2 }}
+                shadowOpacity={isDarkMode ? 0.3 : 0.1}
+                shadowRadius={4}
+                elevation={isAndroid ? 3 : 2}
+                opacity={isBlocked ? 0.5 : 1}
+              >
+                <acao.icon size={20} color={isBlocked ? colors.secondaryText : colors.primary} />
+                <Text fontSize={14} color={isBlocked ? colors.secondaryText : colors.text} flex={1}>
+                  {acao.titulo}
+                </Text>
+                {isBlocked && (
+                  <Text fontSize={10} color={colors.secondaryText} fontWeight="600">
+                    Bloqueado
+                  </Text>
+                )}
+              </XStack>
+            </TouchableOpacity>
+          );
+        })}
+        
+        {!isCheckedIn && (
+          <YStack
+            backgroundColor={colors.warning}
+            padding="$3"
             borderRadius="$4"
-            borderWidth={1}
-            borderColor={colors.border}
-            alignItems="center"
-            gap="$3"
-            shadowColor={isDarkMode ? "#000000" : "#000000"}
-            shadowOffset={{ width: 0, height: 2 }}
-            shadowOpacity={isDarkMode ? 0.3 : 0.1}
-            shadowRadius={4}
-            elevation={isAndroid ? 3 : 2}
+            marginTop="$2"
           >
-            <acao.icon size={20} color={colors.primary} />
-            <Text fontSize={14} color={colors.text} flex={1}>
-              {acao.titulo}
+            <Text fontSize={12} color="#FFFFFF" textAlign="center" fontWeight="600">
+              ⚠️ Realize o CHECK-IN para liberar todas as funcionalidades
             </Text>
-          </XStack>
-        </TouchableOpacity>
-      ))}
-    </YStack>
-  );
+          </YStack>
+        )}
+      </YStack>
+    );
+  };
 
   // Componente para renderizar almoxarifado
   const AlmoxarifadoTab = () => (
     <YStack>
       <InfoCard title="ALMOXARIFADO DO CLIENTE">
-        <TouchableOpacity style={{ marginBottom: 16 }}>
+        <TouchableOpacity 
+          style={{ marginBottom: 16 }}
+          disabled={!isCheckedIn}
+        >
           <XStack
-            backgroundColor={colors.primary}
+            backgroundColor={isCheckedIn ? colors.primary : colors.border}
             padding="$3"
             borderRadius="$3"
             alignItems="center"
             justifyContent="center"
             borderWidth={2}
-            borderColor={colors.primary}
+            borderColor={isCheckedIn ? colors.primary : colors.border}
             borderStyle="dashed"
+            opacity={isCheckedIn ? 1 : 0.5}
           >
-            <Text color="#FFFFFF" fontSize={14} fontWeight="600">
-              Adicionar item
+            <Text 
+              color={isCheckedIn ? "#FFFFFF" : colors.secondaryText} 
+              fontSize={14} 
+              fontWeight="600"
+            >
+              {isCheckedIn ? "Adicionar item" : "Adicionar item (Bloqueado)"}
             </Text>
           </XStack>
         </TouchableOpacity>
+        
+        {!isCheckedIn && (
+          <YStack
+            backgroundColor={colors.warning}
+            padding="$2"
+            borderRadius="$3"
+            marginBottom="$3"
+          >
+            <Text fontSize={11} color="#FFFFFF" textAlign="center" fontWeight="600">
+              ⚠️ CHECK-IN necessário para gerenciar almoxarifado
+            </Text>
+          </YStack>
+        )}
         
         {almoxarifadoData.map((item, index) => (
           <YStack
@@ -488,16 +550,16 @@ export default function OrdemServicoDetalhes() {
         </Text>
       </InfoCard>
 
-      {/* Botão Check-in - apenas na aba serviço */}
+      {/* Botão Check-in/Checklist - apenas na aba serviço */}
       <Button
-        backgroundColor={colors.primary}
+        backgroundColor={isCheckedIn ? colors.info : colors.primary}
         color="#FFFFFF"
         fontSize={16}
         fontWeight="700"
         height={56}
         borderRadius="$4"
         marginTop="$4"
-        shadowColor={colors.primary}
+        shadowColor={isCheckedIn ? colors.info : colors.primary}
         shadowOffset={{ width: 0, height: 4 }}
         shadowOpacity={0.3}
         shadowRadius={8}
@@ -507,14 +569,22 @@ export default function OrdemServicoDetalhes() {
           scale: 0.98
         }}
         onPress={() => {
-          // Implementar lógica de check-in
-          console.log('Check-in realizado para OS:', osData.id);
+          if (!isCheckedIn) {
+            handleCheckIn();
+          } else {
+            // Navegar para checklist
+            console.log('Abrir checklist para OS:', osData.id);
+          }
         }}
       >
         <XStack alignItems="center" gap="$2">
-          <CheckCircle2 size={20} color="#FFFFFF" />
+          {isCheckedIn ? (
+            <List size={20} color="#FFFFFF" />
+          ) : (
+            <CheckCircle2 size={20} color="#FFFFFF" />
+          )}
           <Text color="#FFFFFF" fontSize={16} fontWeight="700">
-            CHECK-IN
+            {isCheckedIn ? "CHECK LIST" : "CHECK-IN"}
           </Text>
         </XStack>
       </Button>
@@ -563,13 +633,13 @@ export default function OrdemServicoDetalhes() {
           </TouchableOpacity>
           
           <XStack
-            backgroundColor={osData.status === 'Pendente' ? colors.warning : colors.primary}
+            backgroundColor={osStatus === 'Pendente' ? colors.warning : colors.primary}
             paddingHorizontal="$3"
             paddingVertical="$2"
             borderRadius="$3"
           >
             <Text color="#FFFFFF" fontSize={12} fontWeight="700">
-              {osData.status}
+              {osStatus}
             </Text>
           </XStack>
         </XStack>
