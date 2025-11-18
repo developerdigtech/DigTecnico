@@ -1,6 +1,6 @@
 import { YStack, XStack, Text, Avatar, Button, Switch, Separator, Theme, ScrollView, Card, Spinner } from "tamagui";
 import { useState, useEffect } from "react";
-import { Mail, Phone, MapPin, Moon, Sun, LogOut, Edit3, Share2, Wifi, ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
+import { Mail, Phone, MapPin, Moon, Sun, LogOut, Edit3, Share2, Wifi, ChevronDown, ChevronUp, Building2 } from "@tamagui/lucide-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import NetInfo from '@react-native-community/netinfo';
@@ -9,7 +9,8 @@ import { Platform, Alert } from 'react-native';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import { SSIDDisplay } from '../../../components/network/SSIDDisplay';
 import { authService } from '../../../services/authService';
-import { User } from '../../../types/api';
+import { companyService } from '../../../services/companyService';
+import { User, CompanyBranch } from '../../../types/api';
 
 export default function Perfil() {
     const { isDarkMode, toggleTheme } = useThemeContext();
@@ -17,7 +18,9 @@ export default function Perfil() {
     const [isNetworkExpanded, setIsNetworkExpanded] = useState(false);
     const [locationPermission, setLocationPermission] = useState(false);
     const [user, setUser] = useState<User | null>(null);
+    const [companyBranch, setCompanyBranch] = useState<CompanyBranch | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingCompany, setIsLoadingCompany] = useState(false);
     const insets = useSafeAreaInsets();
 
     const handleThemeToggle = () => {
@@ -36,6 +39,15 @@ export default function Perfil() {
             
             if (userData) {
                 setUser(userData);
+                
+                // Se o usuário tiver organizationId e branchId, busca os dados da empresa
+                if (userData.organizationId && userData.branchId) {
+                    loadCompanyData(userData.organizationId, userData.branchId);
+                } else {
+                    // Para testes, você pode usar valores hardcoded aqui:
+                    // loadCompanyData('1', '5');
+                    console.log('Usuário sem organizationId ou branchId definidos');
+                }
             } else {
                 // Se não houver dados, redireciona para login
                 router.replace('/');
@@ -45,6 +57,19 @@ export default function Perfil() {
             Alert.alert('Erro', 'Não foi possível carregar os dados do usuário');
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const loadCompanyData = async (organizationId: string, branchId: string) => {
+        try {
+            setIsLoadingCompany(true);
+            const branchData = await companyService.getBranchInfo(organizationId, branchId);
+            setCompanyBranch(branchData);
+        } catch (error) {
+            console.error('Erro ao carregar dados da empresa:', error);
+            // Não exibe alert para não interromper o fluxo
+        } finally {
+            setIsLoadingCompany(false);
         }
     };
 
@@ -193,17 +218,17 @@ export default function Perfil() {
                                     Telefone: {user.phone}
                                 </Text>
                             )}
-                            <Text fontSize="$2" color="$color">
-                                Filial: {user.filial}
-                            </Text>
+                            
                             {user.location && (
                                 <Text fontSize="$2" color="$color">
                                     Localização: {user.location}
                                 </Text>
                             )}
-                            <Text fontSize="$2" color="$color">
-                                ID: {user.id}
-                            </Text>
+                            {user.externalUserId && (
+                                <Text fontSize="$2" color="$color">
+                                    ID: {user.externalUserId}
+                                </Text>
+                            )}
                         </YStack>
                         <Button
                             size="$8"
@@ -216,6 +241,91 @@ export default function Perfil() {
                         />
                     </XStack>
                 </Card>
+
+                {/* Card de Informações da Empresa/Filial */}
+                {companyBranch && (
+                    <Card
+                        backgroundColor="$backgroundHover"
+                        borderRadius="$4"
+                        padding="$3"
+                        borderWidth={1}
+                        borderColor="$borderColor"
+                        marginTop="$2"
+                    >
+                        <YStack gap="$2">
+                            <XStack alignItems="center" gap="$2">
+                                <Building2 size={16} color="$color" />
+                                <Text fontSize="$4" fontWeight="700" color="$color">
+                                    Informações da Empresa
+                                </Text>
+                            </XStack>
+                            
+                            <YStack gap="$1" paddingTop="$1">
+                                <Text fontSize="$3" fontWeight="600" color="$color">
+                                    {companyBranch.fantasia}
+                                </Text>
+                                <Text fontSize="$2" color="$color">
+                                    Razão Social: {companyBranch.razao}
+                                </Text>
+                                {companyBranch.cnpj && (
+                                    <Text fontSize="$2" color="$color">
+                                        CNPJ: {companyBranch.cnpj}
+                                    </Text>
+                                )}
+                                {companyBranch.telefone && (
+                                    <Text fontSize="$2" color="$color">
+                                        Telefone: {companyBranch.telefone}
+                                    </Text>
+                                )}
+                                {companyBranch.email && (
+                                    <Text fontSize="$2" color="$color">
+                                        E-mail: {companyBranch.email}
+                                    </Text>
+                                )}
+                                {companyBranch.whatsapp && (
+                                    <Text fontSize="$2" color="$color">
+                                        WhatsApp: {companyBranch.whatsapp}
+                                    </Text>
+                                )}
+                                {companyBranch.endereco && (
+                                    <Text fontSize="$2" color="$color">
+                                        Endereço: {companyBranch.endereco}, {companyBranch.numero}
+                                        {companyBranch.complemento && ` - ${companyBranch.complemento}`}
+                                    </Text>
+                                )}
+                                {companyBranch.bairro && (
+                                    <Text fontSize="$2" color="$color">
+                                        Bairro: {companyBranch.bairro}
+                                    </Text>
+                                )}
+                                {companyBranch.cep && (
+                                    <Text fontSize="$2" color="$color">
+                                        CEP: {companyBranch.cep}
+                                    </Text>
+                                )}
+                            </YStack>
+                        </YStack>
+                    </Card>
+                )}
+
+                {/* Loading da empresa */}
+                {isLoadingCompany && !companyBranch && (
+                    <Card
+                        backgroundColor="$backgroundHover"
+                        borderRadius="$4"
+                        padding="$3"
+                        borderWidth={1}
+                        borderColor="$borderColor"
+                        marginTop="$2"
+                    >
+                        <XStack alignItems="center" gap="$2">
+                            <Spinner size="small" color="$color" />
+                            <Text fontSize="$3" color="$color">
+                                Carregando informações da empresa...
+                            </Text>
+                        </XStack>
+                    </Card>
+                )}
 
                 {/* Informações da Rede - Acordeão */}
                 <Card

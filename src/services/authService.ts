@@ -56,6 +56,9 @@ export const authService = {
           role: responseData.user.isAdmin ? 'admin' : 'technician',
           filial: responseData.organization?.name || 'Fibron',
           location: responseData.user.location,
+          organizationId: responseData.organization?.id?.toString() || responseData.user.organizationId?.toString(),
+          branchId: responseData.user.branchId?.toString() || responseData.user.filialId?.toString(),
+          externalUserId: responseData.user.externalUserId.toString()
         }
       };
 

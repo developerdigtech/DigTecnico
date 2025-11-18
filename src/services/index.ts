@@ -7,3 +7,4 @@ export { orderService } from './orderService';
 export { clientService } from './clientService';
 export { warehouseService } from './warehouseService';
 export { dashboardService } from './dashboardService';
+export { companyService } from './companyService';

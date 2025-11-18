@@ -9,11 +9,19 @@ const API_URLS = {
   production: 'https://api.fibron.com/api',
 };
 
+// URL raiz sem o /mobile (para endpoints que não usam esse prefixo)
+const API_ROOT_URLS = {
+  development: 'http://localhost:4444',
+  staging: 'https://staging-api.fibron.com',
+  production: 'https://api.fibron.com',
+};
+
 // Ambiente atual (pode ser controlado por variável de ambiente)
 const ENV = 'development'; // ou 'staging', 'production'
 
 export const API_CONFIG = {
   BASE_URL: API_URLS[ENV],
+  ROOT_URL: API_ROOT_URLS[ENV],
   TIMEOUT: 30000, // 30 segundos
   HEADERS: {
     'Content-Type': 'application/json',
@@ -69,5 +77,10 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     STATS: '/dashboard/stats',
     RECENT_ORDERS: '/dashboard/recent-orders',
+  },
+  
+  // Empresa/Filial
+  COMPANY: {
+    BRANCH: (organizationId: string, branchId: string) => `/empresa-filial/${organizationId}/${branchId}`,
   },
 };

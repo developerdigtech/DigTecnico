@@ -49,6 +49,9 @@ export interface User {
   role: 'admin' | 'technician' | 'manager';
   filial: string;
   location?: string;
+  organizationId?: string;
+  branchId?: string;
+  externalUserId:string
 }
 
 // Tipos de Ordem de Serviço
@@ -162,4 +165,51 @@ export interface Photo {
   thumbnail?: string;
   descricao?: string;
   dataHora: string;
+}
+
+// Tipos de Empresa/Filial
+export interface CompanyBranch {
+  id: string;
+  ativo: string;
+  id_empresa: string;
+  razao: string;
+  fantasia: string;
+  cidade: string;
+  cnpj: string;
+  endereco: string;
+  numero: string;
+  cep: string;
+  ie: string;
+  telefone: string;
+  telefone1: string;
+  fax: string;
+  complemento: string;
+  bairro: string;
+  email: string;
+  site: string;
+  whatsapp: string;
+  logo: string;
+  logo_docs: string;
+  tipo_pessoa: string;
+  // Dados do contador
+  contador_nome: string;
+  contador_cnpj: string;
+  contador_cpf: string;
+  contador_crc: string;
+  contador_uf: string;
+  contador_cep: string;
+  contador_endereco: string;
+  contador_numero: string;
+  contador_complemento: string;
+  contador_bairro: string;
+  contador_telefone: string;
+  contador_fax: string;
+  contador_email: string;
+  // Outros campos
+  latitude: string;
+  longitude: string;
+  facebook: string;
+  email_suporte: string;
+  // Campos adicionais conforme necessário
+  [key: string]: any;
 }

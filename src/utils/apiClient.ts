@@ -54,7 +54,8 @@ export class ApiClient {
   // Método genérico para fazer requisições
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    useRootUrl = false
   ): Promise<ApiResponse<T>> {
     try {
       // Garante que o token está carregado
@@ -73,8 +74,9 @@ export class ApiClient {
         headers['Authorization'] = `Bearer ${this.token}`;
       }
 
-      // Monta URL completa
-      const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+      // Monta URL completa - usa ROOT_URL se especificado
+      const baseUrl = useRootUrl ? API_CONFIG.ROOT_URL : API_CONFIG.BASE_URL;
+      const url = `${baseUrl}${endpoint}`;
 
       // Faz a requisição com timeout
       const controller = new AbortController();
@@ -135,37 +137,37 @@ export class ApiClient {
 
   // Métodos HTTP
 
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+  async get<T>(endpoint: string, useRootUrl = false): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'GET',
-    });
+    }, useRootUrl);
   }
 
-  async post<T>(endpoint: string, body?: any): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, body?: any, useRootUrl = false): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: JSON.stringify(body),
-    });
+    }, useRootUrl);
   }
 
-  async put<T>(endpoint: string, body?: any): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, body?: any, useRootUrl = false): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: JSON.stringify(body),
-    });
+    }, useRootUrl);
   }
 
-  async patch<T>(endpoint: string, body?: any): Promise<ApiResponse<T>> {
+  async patch<T>(endpoint: string, body?: any, useRootUrl = false): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PATCH',
       body: JSON.stringify(body),
-    });
+    }, useRootUrl);
   }
 
-  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+  async delete<T>(endpoint: string, useRootUrl = false): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'DELETE',
-    });
+    }, useRootUrl);
   }
 }
 
