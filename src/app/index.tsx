@@ -1,19 +1,61 @@
 import { useState } from 'react';
-import { Button, Input, YStack, Text, Image, View } from 'tamagui';
-import { LogIn } from '@tamagui/lucide-icons';
-import { ImageBackground, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Link, router, useRouter } from 'expo-router';
+import { Button, Input, YStack, Text, Image, View, Spinner } from 'tamagui';
+import { LogIn, AlertCircle } from '@tamagui/lucide-icons';
+import { ImageBackground, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
+import { router } from 'expo-router';
+import { authService } from '../services/authService';
 
 const localLogo = require('../assets/image/logo-fibron.png')
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    // Adicione sua lógica de autenticação aqui
-    console.log('Login com:', { email, password });
-    router.push("/(tabs)/Home")
+  const handleLogin = async () => {
+    // Limpa erros anteriores
+    setError('');
+
+    // Validação básica
+    if (!username.trim()) {
+      setError('Por favor, insira seu e-mail');
+      return;
+    }
+
+    if (!password) {
+      setError('Por favor, insira sua senha');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      
+      // Chama o serviço de autenticação
+      const response = await authService.login({
+        username: username.trim(),
+        password: password,
+      });
+
+      console.log('Login realizado com sucesso:', response.user);
+      
+      // Redireciona para a tela Home
+      router.replace("/(tabs)/Home");
+      
+    } catch (err: any) {
+      console.error('Erro no login:', err);
+      
+      // Tratamento de erros
+      if (err.statusCode === 401) {
+        setError('Usuário ou senha incorretos');
+      } else if (err.statusCode === 0) {
+        setError('Erro de conexão. Verifique sua internet');
+      } else {
+        setError(err.message || 'Erro ao fazer login. Tente novamente');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -52,33 +94,57 @@ export default function LoginPage() {
             <Input
               size="$4"
               placeholder="E-mail"
-              value={email}
-              onChangeText={setEmail}
+              value={username}
+              onChangeText={(text) => {
+                setUsername(text);
+                setError(''); // Limpa erro ao digitar
+              }}
               keyboardType="email-address"
               autoCapitalize="none"
               width="100%"
+              disabled={isLoading}
             />
             <Input
               size="$4"
               placeholder="Senha"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(text) => {
+                setPassword(text);
+                setError(''); // Limpa erro ao digitar
+              }}
               secureTextEntry
               width="100%"
-             
+              disabled={isLoading}
             />
+
+            {/* Mensagem de erro */}
+            {error ? (
+              <YStack
+                backgroundColor="$red4"
+                padding="$3"
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor="$red8"
+              >
+                <Text color="$red10" fontSize="$3" textAlign="center">
+                  {error}
+                </Text>
+              </YStack>
+            ) : null}
+
             <Button
-              icon={<LogIn size={20} strokeWidth={2.5} />}
+              icon={isLoading ? <Spinner /> : <LogIn size={20} strokeWidth={2.5} />}
               size="$4"
               onPress={handleLogin}
               marginTop="$3"
               width="100%"
               color={'$black1'}
               fontWeight={"bold"}
-               theme="accent"
-               
+              theme="accent"
+              disabled={isLoading}
+              opacity={isLoading ? 0.6 : 1}
             >
-              Entrar
+              {isLoading ? 'Entrando...' : 'Entrar'}
             </Button>
 
            

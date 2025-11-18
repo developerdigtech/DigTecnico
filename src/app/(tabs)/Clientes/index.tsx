@@ -221,6 +221,7 @@ const Relatorios = () => {
             fontSize={28} 
             fontWeight="900" 
             color={colors.text}
+            mt={"$3"}
           >
             Clientes
           </Text>

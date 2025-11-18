@@ -19,34 +19,81 @@ export const authService = {
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
-      const response = await apiClient.post<LoginResponse>(
+      const response = await apiClient.post<any>(
         API_ENDPOINTS.AUTH.LOGIN,
         credentials
       );
 
-      if (response.success && response.data) {
-        // Armazena token
-        await apiClient.setToken(response.data.token);
-        
-        // Armazena refresh token
-        await AsyncStorage.setItem(
-          STORAGE_KEYS.REFRESH_TOKEN,
-          response.data.refreshToken
-        );
-        
-        // Armazena dados do usuário
-        await AsyncStorage.setItem(
-          STORAGE_KEYS.USER,
-          JSON.stringify(response.data.user)
-        );
+      console.log('Resposta completa da API:', response);
 
-        return response.data;
+      // Extrai os dados da resposta
+      // O backend retorna: { user, accessToken, organization }
+      const responseData = response.data || response;
+
+      // Valida se tem accessToken
+      if (!responseData.accessToken) {
+        console.error('Estrutura de resposta:', responseData);
+        throw new Error('Token não encontrado na resposta');
       }
 
-      throw new Error('Falha ao realizar login');
-    } catch (error) {
+      // Valida se tem usuário
+      if (!responseData.user) {
+        console.error('Estrutura de resposta:', responseData);
+        throw new Error('Dados do usuário não encontrados na resposta');
+      }
+
+      // Monta os dados no formato esperado pela aplicação
+      const loginData: LoginResponse = {
+        token: responseData.accessToken,
+        refreshToken: responseData.refreshToken || responseData.accessToken, // usa accessToken se não tiver refreshToken
+        user: {
+          id: responseData.user.id.toString(),
+          name: responseData.user.name,
+          username: responseData.user.username,
+          email: responseData.user.email,
+          phone: responseData.user.phone || '',
+          avatar: responseData.user.avatar,
+          role: responseData.user.isAdmin ? 'admin' : 'technician',
+          filial: responseData.organization?.name || 'Fibron',
+          location: responseData.user.location,
+        }
+      };
+
+      console.log('Dados processados:', loginData);
+
+      // Armazena token
+      await apiClient.setToken(loginData.token);
+      
+      // Armazena refresh token
+      if (loginData.refreshToken) {
+        await AsyncStorage.setItem(
+          STORAGE_KEYS.REFRESH_TOKEN,
+          loginData.refreshToken
+        );
+      }
+      
+      // Armazena dados do usuário
+      await AsyncStorage.setItem(
+        STORAGE_KEYS.USER,
+        JSON.stringify(loginData.user)
+      );
+
+      return loginData;
+    } catch (error: any) {
       console.error('Erro no login:', error);
-      throw error;
+      
+      // Se o erro já tem statusCode, repassa ele
+      if (error.statusCode !== undefined) {
+        throw error;
+      }
+      
+      // Senão, cria um erro genérico
+      throw {
+        success: false,
+        error: 'login_failed',
+        message: error.message || 'Falha ao realizar login',
+        statusCode: 500,
+      };
     }
   },
 
