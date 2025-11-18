@@ -1,23 +1,76 @@
-import { YStack, XStack, Text, Avatar, Button, Switch, Separator, Theme, ScrollView, Card } from "tamagui";
+import { YStack, XStack, Text, Avatar, Button, Switch, Separator, Theme, ScrollView, Card, Spinner } from "tamagui";
 import { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Moon, Sun, LogOut, Edit3, Share2, Wifi, ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import NetInfo from '@react-native-community/netinfo';
 import * as Location from 'expo-location';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import { SSIDDisplay } from '../../../components/network/SSIDDisplay';
+import { authService } from '../../../services/authService';
+import { User } from '../../../types/api';
 
 export default function Perfil() {
     const { isDarkMode, toggleTheme } = useThemeContext();
     const [networkInfo, setNetworkInfo] = useState<any>(null);
     const [isNetworkExpanded, setIsNetworkExpanded] = useState(false);
     const [locationPermission, setLocationPermission] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const insets = useSafeAreaInsets();
 
     const handleThemeToggle = () => {
         toggleTheme();
+    };
+
+    // Carrega os dados do usuário
+    useEffect(() => {
+        loadUserData();
+    }, []);
+
+    const loadUserData = async () => {
+        try {
+            setIsLoading(true);
+            const userData = await authService.getUserData();
+            
+            if (userData) {
+                setUser(userData);
+            } else {
+                // Se não houver dados, redireciona para login
+                router.replace('/');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados do usuário:', error);
+            Alert.alert('Erro', 'Não foi possível carregar os dados do usuário');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleLogout = async () => {
+        Alert.alert(
+            'Sair',
+            'Deseja realmente sair da sua conta?',
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel'
+                },
+                {
+                    text: 'Sair',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await authService.logout();
+                            router.replace('/');
+                        } catch (error) {
+                            console.error('Erro ao fazer logout:', error);
+                        }
+                    }
+                }
+            ]
+        );
     };
 
     // Solicita permissão de localização (necessário para SSID no iOS)
@@ -45,19 +98,25 @@ export default function Perfil() {
         return () => unsubscribe();
     }, []);
 
-    const userInfo = {
-        name: "Renan",
-        username: "admin",
-        filial: "Fibron",
-        version: "20240708",
-        server: "sgp",
-        email: "joao.silva@email.com",
-        phone: "(11) 98765-4321",
-        location: "São Paulo, SP",
-        avatar: "https://github.com/renan-maestre.png",
-        ordensDesignadas: 38,
-        ordensFechadasHoje: 0
-    };
+    // Mostra loading enquanto carrega dados
+    if (isLoading) {
+        return (
+            <YStack 
+                flex={1} 
+                backgroundColor="$background" 
+                alignItems="center" 
+                justifyContent="center"
+            >
+                <Spinner size="large" color="$color" />
+                <Text marginTop="$4" color="$color">Carregando perfil...</Text>
+            </YStack>
+        );
+    }
+
+    // Se não houver usuário, não renderiza nada
+    if (!user) {
+        return null;
+    }
 
     return (
         <YStack 
@@ -73,9 +132,13 @@ export default function Perfil() {
                     <YStack position="relative">
                         <Avatar circular size="$8" borderWidth={2} borderColor="$borderColor">
                             <Avatar.Image 
-                                source={{ uri: userInfo.avatar }} 
+                                source={{ uri: user.avatar || "https://github.com/renan-maestre.png" }} 
                             />
-                            <Avatar.Fallback backgroundColor="$accent2" />
+                            <Avatar.Fallback backgroundColor="$accent2">
+                                <Text fontSize="$6" fontWeight="bold" color="white">
+                                    {user.name.charAt(0).toUpperCase()}
+                                </Text>
+                            </Avatar.Fallback>
                         </Avatar>
                         
                         <Button
@@ -98,10 +161,10 @@ export default function Perfil() {
                     
                     <YStack alignItems="center" gap="$1">
                         <Text fontSize="$4" fontWeight="900" color="$color">
-                            TÉCNICO
+                            {user.role === 'admin' ? 'ADMINISTRADOR' : 'TÉCNICO'}
                         </Text>
                         <Text fontSize="$5" fontWeight="900" color="$color">
-                            {userInfo.name}
+                            {user.name}
                         </Text>
                     </YStack>
                 </YStack>
@@ -115,28 +178,38 @@ export default function Perfil() {
                     borderColor="$borderColor"
                 >
                     <XStack justifyContent="space-between" alignItems="flex-start">
-                        <YStack gap="$1">
+                        <YStack gap="$1" flex={1}>
                             <Text fontSize="$4" fontWeight="700" color="$color">
                                 Informações do usuário
                             </Text>
                             <Text fontSize="$2" color="$color">
-                                Usuário: {userInfo.username}
+                                Usuário: {user.username}
                             </Text>
                             <Text fontSize="$2" color="$color">
-                                Filial: {userInfo.filial}
+                                E-mail: {user.email}
                             </Text>
+                            {user.phone && (
+                                <Text fontSize="$2" color="$color">
+                                    Telefone: {user.phone}
+                                </Text>
+                            )}
                             <Text fontSize="$2" color="$color">
-                                Versão: {userInfo.version}
+                                Filial: {user.filial}
                             </Text>
+                            {user.location && (
+                                <Text fontSize="$2" color="$color">
+                                    Localização: {user.location}
+                                </Text>
+                            )}
                             <Text fontSize="$2" color="$color">
-                                Server: {userInfo.server}
+                                ID: {user.id}
                             </Text>
                         </YStack>
                         <Button
                             size="$8"
                             icon={LogOut}
                             chromeless
-                            onPress={() => router.replace("/")}
+                            onPress={handleLogout}
                             pressStyle={{
                                 scale: 0.9
                             }}
