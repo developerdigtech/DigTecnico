@@ -7,6 +7,7 @@ import NetInfo from '@react-native-community/netinfo';
 import * as Location from 'expo-location';
 import { Platform } from 'react-native';
 import { useThemeContext } from '../../../contexts/ThemeContext';
+import { SSIDDisplay } from '../../../components/network/SSIDDisplay';
 
 export default function Perfil() {
     const { isDarkMode, toggleTheme } = useThemeContext();
@@ -185,7 +186,7 @@ export default function Perfil() {
                                         <>
                                             {networkInfo.details?.ssid ? (
                                                 <Text fontSize="$2" color="$color">
-                                                    SSID: {networkInfo.details.ssid}
+                                                    SSID: {networkInfo?.details?.ssid}
                                                 </Text>
                                             ) : (
                                                 <Text fontSize="$2" color="$color" opacity={0.6}>
@@ -247,6 +248,10 @@ export default function Perfil() {
                         </YStack>
                     )}
                 </Card>
+
+               
+
+                
             </YStack>
     );
 }
