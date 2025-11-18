@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, Input, YStack, Text, Image, View, Spinner } from 'tamagui';
 import { LogIn, AlertCircle } from '@tamagui/lucide-icons';
-import { ImageBackground, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
+import { ImageBackground, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '../services/authService';
 
@@ -12,6 +12,49 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Valores animados
+  const logoScale = useRef(new Animated.Value(1.5)).current; // Começa com 2x o tamanho
+  const logoTranslateY = useRef(new Animated.Value(0)).current;
+  const backgroundOpacity = useRef(new Animated.Value(0)).current; // Começa com fundo preto (opacity 0)
+  const formOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Aguarda 500ms antes de iniciar a animação
+    const timer = setTimeout(() => {
+      // Primeira fase: reduz tamanho e opacidade do fundo
+      Animated.parallel([
+        // Reduz o tamanho da logo
+        Animated.timing(logoScale, {
+          toValue: 1,
+          duration: 1500,
+          useNativeDriver: true,
+        }),
+        // Aumenta opacidade do fundo de 0 para 0.5
+        Animated.timing(backgroundOpacity, {
+          toValue: 1, // Valor de 0 a 1 que será multiplicado por 0.5 no overlay
+          duration: 1500,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        // Segunda fase: desloca a logo para cima com animação suave
+        Animated.timing(logoTranslateY, {
+          toValue: -120, // Move a logo para cima para dar espaço ao formulário
+          duration: 800,
+          useNativeDriver: true,
+        }).start(() => {
+          // Terceira fase: mostra o formulário com fade-in suave
+          Animated.timing(formOpacity, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }).start();
+        });
+      });
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLogin = async () => {
     // Limpa erros anteriores
@@ -59,110 +102,142 @@ export default function LoginPage() {
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/image/background.png')}
-      style={styles.background}
-      imageStyle={styles.imageStyle}
-      resizeMode="cover"
-    >
+    <View style={styles.container}>
+      {/* Background com opacidade animada */}
+      <ImageBackground
+        source={require('../assets/image/background.png')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <Animated.View 
+          style={[
+            styles.overlay,
+            { 
+              opacity: backgroundOpacity.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0.5], // De totalmente transparente (0) para semi-transparente (0.5)
+              })
+            }
+          ]} 
+        />
+      </ImageBackground>
+
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <YStack
-          flex={1}
-          justifyContent="center"
-          alignItems="center"
-          padding="$4"
-          space="$3"
-          
-        >
-          <YStack
-            padding="$4"
-            borderRadius="$4"
-            width="100%"
-            maxWidth={400}
-            space="$3"
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {/* Logo animada - posicionada absolutamente no centro */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginLeft: -100, // Metade da largura da logo (200/2)
+              marginTop: -75,   // Metade da altura da logo (150/2)
+              transform: [
+                { scale: logoScale },
+                { translateY: logoTranslateY }
+              ],
+              zIndex: 2,
+            }}
           >
-            <View jc="center" ai="center" marginBottom="$3">
-              <Image
-                source={localLogo}
-                width={200}
-                height={150}
-                resizeMode="contain"
-                alt="Minha Logo"
-              />
-            </View>
-
-            <Input
-              size="$4"
-              placeholder="E-mail"
-              value={username}
-              onChangeText={(text) => {
-                setUsername(text);
-                setError(''); // Limpa erro ao digitar
-              }}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              width="100%"
-              disabled={isLoading}
+            <Image
+              source={localLogo}
+              width={200}
+              height={150}
+              resizeMode="contain"
+              alt="Minha Logo"
             />
-            <Input
-              size="$4"
-              placeholder="Senha"
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                setError(''); // Limpa erro ao digitar
-              }}
-              secureTextEntry
-              width="100%"
-              disabled={isLoading}
-            />
+          </Animated.View>
 
-            {/* Mensagem de erro */}
-            {error ? (
-              <YStack
-                backgroundColor="$red4"
-                padding="$3"
-                borderRadius="$3"
-                borderWidth={1}
-                borderColor="$red8"
-              >
-                <Text color="$red10" fontSize="$3" textAlign="center">
-                  {error}
-                </Text>
-              </YStack>
-            ) : null}
-
-            <Button
-              icon={isLoading ? <Spinner /> : <LogIn size={20} strokeWidth={2.5} />}
-              size="$4"
-              onPress={handleLogin}
-              marginTop="$3"
+          {/* Formulário com fade in */}
+          <Animated.View 
+            style={{ 
+              opacity: formOpacity, 
+              width: '90%', 
+              maxWidth: 400,
+              paddingHorizontal: 16,
+            }}
+          >
+            <YStack
+              padding="$4"
+              borderRadius="$4"
               width="100%"
-              color={'$black1'}
-              fontWeight={"bold"}
-              theme="accent"
-              disabled={isLoading}
-              opacity={isLoading ? 0.6 : 1}
+              space="$3"
+              mt={"$15"}
             >
-              {isLoading ? 'Entrando...' : 'Entrar'}
-            </Button>
+                <Input
+                  size="$4"
+                  placeholder="E-mail"
+                  value={username}
+                  onChangeText={(text) => {
+                    setUsername(text);
+                    setError(''); // Limpa erro ao digitar
+                  }}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  width="100%"
+                  disabled={isLoading}
+                />
+                <Input
+                  size="$4"
+                  placeholder="Senha"
+                  value={password}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    setError(''); // Limpa erro ao digitar
+                  }}
+                  secureTextEntry
+                  width="100%"
+                  disabled={isLoading} />
 
-           
-          </YStack>
-        </YStack>
+                {/* Mensagem de erro */}
+                {error ? (
+                  <YStack
+                    backgroundColor="$red4"
+                    padding="$3"
+                    borderRadius="$3"
+                    borderWidth={1}
+                    borderColor="$red8"
+                  >
+                    <Text color="$red10" fontSize="$3" textAlign="center">
+                      {error}
+                    </Text>
+                  </YStack>
+                ) : null}
+
+                <Button
+                  icon={isLoading ? <Spinner /> : <LogIn size={20} strokeWidth={2.5} />}
+                  size="$4"
+                  onPress={handleLogin}
+                  marginTop="$3"
+                  width="100%"
+                  color={'$black1'}
+                  fontWeight={"bold"}
+                  theme="accent"
+                  disabled={isLoading}
+                  opacity={isLoading ? 0.6 : 1}
+                >
+                  {isLoading ? 'Entrando...' : 'Entrar'}
+                </Button>
+              </YStack>
+            </Animated.View>
+        </View>
       </TouchableWithoutFeedback>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
     backgroundColor: '#000000',
   },
-  imageStyle: {
-    opacity: 0.5,
+  background: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 1)', // Opacidade máxima, será controlada pela animação
   },
 });
