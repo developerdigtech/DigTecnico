@@ -26,12 +26,14 @@ export const authService = {
 
       console.log('Resposta completa da API:', response);
 
-      // Extrai os dados da resposta
-      // O backend retorna: { user, accessToken, organization }
+      // A resposta pode vir em response.data ou diretamente em response
+      // dependendo de como o apiClient está configurado
       const responseData = response.data || response;
 
-      // Valida se tem accessToken
-      if (!responseData.accessToken) {
+      console.log('Response data:', responseData);
+
+      // Valida se tem access_token
+      if (!responseData.access_token) {
         console.error('Estrutura de resposta:', responseData);
         throw new Error('Token não encontrado na resposta');
       }
@@ -42,23 +44,26 @@ export const authService = {
         throw new Error('Dados do usuário não encontrados na resposta');
       }
 
+      const userData = responseData.user;
+      const filialData = responseData.filia || responseData.filial || {};
+
       // Monta os dados no formato esperado pela aplicação
       const loginData: LoginResponse = {
-        token: responseData.accessToken,
-        refreshToken: responseData.refreshToken || responseData.accessToken, // usa accessToken se não tiver refreshToken
+        token: responseData.access_token,
+        refreshToken: responseData.access_token, // API não retornou refresh token no exemplo
         user: {
-          id: responseData.user.id.toString(),
-          name: responseData.user.name,
-          username: responseData.user.username,
-          email: responseData.user.email,
-          phone: responseData.user.phone || '',
-          avatar: responseData.user.avatar,
-          role: responseData.user.isAdmin ? 'admin' : 'technician',
-          filial: responseData.organization?.name || 'Fibron',
-          location: responseData.user.location,
-          organizationId: responseData.organization?.id?.toString() || responseData.user.organizationId?.toString(),
-          branchId: responseData.user.branchId?.toString() || responseData.user.filialId?.toString(),
-          externalUserId: responseData.user.externalUserId.toString()
+          id: userData.funcionario_id?.toString() || userData.id?.toString() || '',
+          name: userData.nome || '',
+          username: userData.email?.split('@')[0] || '',
+          email: userData.email || '',
+          phone: filialData.telefone || '',
+          avatar: userData.avatar,
+          role: 'technician', // Assumindo técnico por padrão
+          filial: filialData.fantasia || filialData.razao_social || '',
+          location: '',
+          organizationId: filialData.id?.toString(),
+          branchId: filialData.id?.toString(),
+          externalUserId: userData.funcionario_id?.toString()
         }
       };
 
@@ -66,7 +71,7 @@ export const authService = {
 
       // Armazena token
       await apiClient.setToken(loginData.token);
-      
+
       // Armazena refresh token
       if (loginData.refreshToken) {
         await AsyncStorage.setItem(
@@ -74,22 +79,30 @@ export const authService = {
           loginData.refreshToken
         );
       }
-      
+
       // Armazena dados do usuário
       await AsyncStorage.setItem(
         STORAGE_KEYS.USER,
         JSON.stringify(loginData.user)
       );
 
+      // Armazena dados da filial
+      if (filialData && filialData.id) {
+        await AsyncStorage.setItem(
+          '@DigTecnico:filial',
+          JSON.stringify(filialData)
+        );
+      }
+
       return loginData;
     } catch (error: any) {
       console.error('Erro no login:', error);
-      
+
       // Se o erro já tem statusCode, repassa ele
       if (error.statusCode !== undefined) {
         throw error;
       }
-      
+
       // Senão, cria um erro genérico
       throw {
         success: false,
@@ -146,7 +159,7 @@ export const authService = {
   async refreshToken(): Promise<string | null> {
     try {
       const refreshToken = await AsyncStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-      
+
       if (!refreshToken) {
         return null;
       }

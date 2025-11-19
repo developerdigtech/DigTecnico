@@ -28,8 +28,10 @@ export interface PaginatedResponse<T> {
 
 // Tipos de Autenticação
 export interface LoginRequest {
-  username: string;
-  password: string;
+  email?: string;
+  senha?: string;
+  username?: string;
+  password?: string;
 }
 
 export interface LoginResponse {

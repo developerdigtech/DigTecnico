@@ -4,14 +4,14 @@
 
 // URLs base por ambiente
 const API_URLS = {
-  development: 'http://localhost:4444/mobile',
+  development: 'http://localhost:3000',
   staging: 'https://staging-api.fibron.com/api',
   production: 'https://api.fibron.com/api',
 };
 
 // URL raiz sem o /mobile (para endpoints que não usam esse prefixo)
 const API_ROOT_URLS = {
-  development: 'http://localhost:4444',
+  development: 'http://localhost:3000',
   staging: 'https://staging-api.fibron.com',
   production: 'https://api.fibron.com',
 };
@@ -33,7 +33,7 @@ export const API_CONFIG = {
 export const API_ENDPOINTS = {
   // Autenticação
   AUTH: {
-    LOGIN: '/signin',
+    LOGIN: '/auth/login',
     LOGOUT: '/auth/logout',
     REFRESH_TOKEN: '/auth/refresh',
     VERIFY: '/auth/verify',

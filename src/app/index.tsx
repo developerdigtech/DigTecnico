@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Button, Input, YStack, Text, Image, View, Spinner } from 'tamagui';
-import { LogIn, AlertCircle } from '@tamagui/lucide-icons';
+import { Button, Input, YStack, Text, Image, View, Spinner, XStack } from 'tamagui';
+import { LogIn, AlertCircle, Eye, EyeOff } from '@tamagui/lucide-icons';
 import { ImageBackground, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '../services/authService';
@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   // Valores animados
   const logoScale = useRef(new Animated.Value(1.5)).current; // Começa com 2x o tamanho
@@ -73,21 +74,21 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true);
-      
-      // Chama o serviço de autenticação
+
+      // Chama o serviço de autenticação com o novo formato
       const response = await authService.login({
-        username: username.trim(),
+        email: username.trim(),
         password: password,
       });
 
       console.log('Login realizado com sucesso:', response.user);
-      
+
       // Redireciona para a tela Home
       router.replace("/(tabs)/Home");
-      
+
     } catch (err: any) {
       console.error('Erro no login:', err);
-      
+
       // Tratamento de erros
       if (err.statusCode === 401) {
         setError('Usuário ou senha incorretos');
@@ -109,16 +110,16 @@ export default function LoginPage() {
         style={styles.background}
         resizeMode="cover"
       >
-        <Animated.View 
+        <Animated.View
           style={[
             styles.overlay,
-            { 
+            {
               opacity: backgroundOpacity.interpolate({
                 inputRange: [0, 1],
                 outputRange: [1, 0.5], // De totalmente transparente (0) para semi-transparente (0.5)
               })
             }
-          ]} 
+          ]}
         />
       </ImageBackground>
 
@@ -149,10 +150,10 @@ export default function LoginPage() {
           </Animated.View>
 
           {/* Formulário com fade in */}
-          <Animated.View 
-            style={{ 
-              opacity: formOpacity, 
-              width: '90%', 
+          <Animated.View
+            style={{
+              opacity: formOpacity,
+              width: '90%',
               maxWidth: 400,
               paddingHorizontal: 16,
             }}
@@ -164,19 +165,22 @@ export default function LoginPage() {
               space="$3"
               mt={"$15"}
             >
-                <Input
-                  size="$4"
-                  placeholder="E-mail"
-                  value={username}
-                  onChangeText={(text) => {
-                    setUsername(text);
-                    setError(''); // Limpa erro ao digitar
-                  }}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  width="100%"
-                  disabled={isLoading}
-                />
+              <Input
+                size="$4"
+                placeholder="E-mail"
+                value={username}
+                onChangeText={(text) => {
+                  setUsername(text);
+                  setError(''); // Limpa erro ao digitar
+                }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                width="100%"
+                disabled={isLoading}
+              />
+
+              {/* Input de senha com ícone de visualização */}
+              <YStack position="relative" width="100%">
                 <Input
                   size="$4"
                   placeholder="Senha"
@@ -185,41 +189,59 @@ export default function LoginPage() {
                     setPassword(text);
                     setError(''); // Limpa erro ao digitar
                   }}
-                  secureTextEntry
+                  secureTextEntry={!showPassword}
                   width="100%"
-                  disabled={isLoading} />
-
-                {/* Mensagem de erro */}
-                {error ? (
-                  <YStack
-                    backgroundColor="$red4"
-                    padding="$3"
-                    borderRadius="$3"
-                    borderWidth={1}
-                    borderColor="$red8"
-                  >
-                    <Text color="$red10" fontSize="$3" textAlign="center">
-                      {error}
-                    </Text>
-                  </YStack>
-                ) : null}
-
-                <Button
-                  icon={isLoading ? <Spinner /> : <LogIn size={20} strokeWidth={2.5} />}
-                  size="$4"
-                  onPress={handleLogin}
-                  marginTop="$3"
-                  width="100%"
-                  color={'$black1'}
-                  fontWeight={"bold"}
-                  theme="accent"
                   disabled={isLoading}
-                  opacity={isLoading ? 0.6 : 1}
-                >
-                  {isLoading ? 'Entrando...' : 'Entrar'}
-                </Button>
+                  paddingRight="$11"
+                />
+                <Button
+                  position="absolute"
+                  right="$2"
+                  top="50%"
+                  y={-20}
+                  chromeless
+                  circular
+                  size="$3"
+                  icon={showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  onPress={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
+                  pressStyle={{
+                    scale: 0.9,
+                  }}
+                />
               </YStack>
-            </Animated.View>
+
+              {/* Mensagem de erro */}
+              {error ? (
+                <YStack
+                  backgroundColor="$red4"
+                  padding="$3"
+                  borderRadius="$3"
+                  borderWidth={1}
+                  borderColor="$red8"
+                >
+                  <Text color="$red10" fontSize="$3" textAlign="center">
+                    {error}
+                  </Text>
+                </YStack>
+              ) : null}
+
+              <Button
+                icon={isLoading ? <Spinner /> : <LogIn size={20} strokeWidth={2.5} />}
+                size="$4"
+                onPress={handleLogin}
+                marginTop="$3"
+                width="100%"
+                color={'$black1'}
+                fontWeight={"bold"}
+                theme="accent"
+                disabled={isLoading}
+                opacity={isLoading ? 0.6 : 1}
+              >
+                {isLoading ? 'Entrando...' : 'Entrar'}
+              </Button>
+            </YStack>
+          </Animated.View>
         </View>
       </TouchableWithoutFeedback>
     </View>
