@@ -180,4 +180,16 @@ export const authService = {
       return null;
     }
   },
+  /**
+   * Obtém os dados da filial armazenados
+   */
+  async getBranchData(): Promise<any | null> {
+    try {
+      const branchData = await AsyncStorage.getItem('@DigTecnico:filial');
+      return branchData ? JSON.parse(branchData) : null;
+    } catch (error) {
+      console.error('Erro ao recuperar dados da filial:', error);
+      return null;
+    }
+  },
 };

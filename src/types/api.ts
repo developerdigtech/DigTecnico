@@ -174,7 +174,7 @@ export interface CompanyBranch {
   id: string;
   ativo: string;
   id_empresa: string;
-  razao: string;
+  razao_social: string;
   fantasia: string;
   cidade: string;
   cnpj: string;

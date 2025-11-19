@@ -36,10 +36,10 @@ export default function Perfil() {
         try {
             setIsLoading(true);
             const userData = await authService.getUserData();
-            
+
             if (userData) {
                 setUser(userData);
-                
+
                 // Se o usuário tiver organizationId e branchId, busca os dados da empresa
                 if (userData.organizationId && userData.branchId) {
                     loadCompanyData(userData.organizationId, userData.branchId);
@@ -63,6 +63,17 @@ export default function Perfil() {
     const loadCompanyData = async (organizationId: string, branchId: string) => {
         try {
             setIsLoadingCompany(true);
+
+            // Tenta pegar do storage local primeiro
+            const localBranchData = await authService.getBranchData();
+
+            if (localBranchData) {
+                console.log('Dados da filial carregados do storage:', localBranchData);
+                setCompanyBranch(localBranchData);
+                return;
+            }
+
+            // Se não tiver no storage, tenta buscar da API
             const branchData = await companyService.getBranchInfo(organizationId, branchId);
             setCompanyBranch(branchData);
         } catch (error) {
@@ -104,7 +115,7 @@ export default function Perfil() {
             if (Platform.OS === 'ios') {
                 const { status } = await Location.requestForegroundPermissionsAsync();
                 setLocationPermission(status === 'granted');
-                
+
                 if (status !== 'granted') {
                     console.log('Permissão de localização negada. SSID não estará disponível no iOS.');
                 }
@@ -126,10 +137,10 @@ export default function Perfil() {
     // Mostra loading enquanto carrega dados
     if (isLoading) {
         return (
-            <YStack 
-                flex={1} 
-                backgroundColor="$background" 
-                alignItems="center" 
+            <YStack
+                flex={1}
+                backgroundColor="$background"
+                alignItems="center"
                 justifyContent="center"
             >
                 <Spinner size="large" color="$color" />
@@ -144,190 +155,95 @@ export default function Perfil() {
     }
 
     return (
-        <YStack 
-            flex={1} 
-            backgroundColor="$background" 
-            paddingHorizontal="$4" 
-            paddingTop={insets.top + 12} 
-            paddingBottom={insets.bottom + 80} 
+        <YStack
+            flex={1}
+            backgroundColor="$background"
+            paddingHorizontal="$4"
+            paddingTop={insets.top + 12}
+            paddingBottom={insets.bottom + 80}
             gap="$2"
         >
-                {/* Avatar e Nome */}
-                <YStack alignItems="center" gap="$2" marginVertical="$2">
-                    <YStack position="relative">
-                        <Avatar circular size="$8" borderWidth={2} borderColor="$borderColor">
-                            <Avatar.Image 
-                                source={{ uri: user.avatar || "https://github.com/renan-maestre.png" }} 
-                            />
-                            <Avatar.Fallback backgroundColor="$accent2">
-                                <Text fontSize="$6" fontWeight="bold" color="white">
-                                    {user.name.charAt(0).toUpperCase()}
-                                </Text>
-                            </Avatar.Fallback>
-                        </Avatar>
-                        
-                        <Button
-                            position="absolute"
-                            bottom={-5}
-                            right={-5}
-                            size="$3"
-                            circular
-                            backgroundColor={isDarkMode ? "$purple8" : "$orange8"}
-                            borderWidth={2}
-                            borderColor="$background"
-                            icon={isDarkMode ? <Moon size={16} color="white" /> : <Sun size={16} color="white" />}
-                            onPress={handleThemeToggle}
-                            pressStyle={{
-                                scale: 0.9,
-                                backgroundColor: isDarkMode ? "$purple9" : "$orange9"
-                            }}
+            {/* Avatar e Nome */}
+            <YStack alignItems="center" gap="$2" marginVertical="$2">
+                <YStack position="relative">
+                    <Avatar circular size="$8" borderWidth={2} borderColor="$borderColor">
+                        <Avatar.Image
+                            source={{ uri: user.avatar || "https://github.com/renan-maestre.png" }}
                         />
-                    </YStack>
-                    
-                    <YStack alignItems="center" gap="$1">
-                        <Text fontSize="$4" fontWeight="900" color="$color">
-                            {user.role === 'admin' ? 'ADMINISTRADOR' : 'TÉCNICO'}
-                        </Text>
-                        <Text fontSize="$5" fontWeight="900" color="$color">
-                            {user.name}
-                        </Text>
-                    </YStack>
+                        <Avatar.Fallback backgroundColor="$accent2">
+                            <Text fontSize="$6" fontWeight="bold" color="white">
+                                {user.name.charAt(0).toUpperCase()}
+                            </Text>
+                        </Avatar.Fallback>
+                    </Avatar>
+
+                    <Button
+                        position="absolute"
+                        bottom={-5}
+                        right={-5}
+                        size="$3"
+                        circular
+                        backgroundColor={isDarkMode ? "$purple8" : "$orange8"}
+                        borderWidth={2}
+                        borderColor="$background"
+                        icon={isDarkMode ? <Moon size={16} color="white" /> : <Sun size={16} color="white" />}
+                        onPress={handleThemeToggle}
+                        pressStyle={{
+                            scale: 0.9,
+                            backgroundColor: isDarkMode ? "$purple9" : "$orange9"
+                        }}
+                    />
                 </YStack>
-                
-                {/* Card de Informações do Usuário */}
-                <Card
-                    backgroundColor="$backgroundHover"
-                    borderRadius="$4"
-                    padding="$3"
-                    borderWidth={1}
-                    borderColor="$borderColor"
-                >
-                    <XStack justifyContent="space-between" alignItems="flex-start">
-                        <YStack gap="$1" flex={1}>
-                            <Text fontSize="$4" fontWeight="700" color="$color">
-                                Informações do usuário
-                            </Text>
+
+                <YStack alignItems="center" gap="$1">
+                    <Text fontSize="$4" fontWeight="900" color="$color">
+                        {user.role === 'admin' ? 'ADMINISTRADOR' : 'TÉCNICO'}
+                    </Text>
+                    <Text fontSize="$5" fontWeight="900" color="$color">
+                        {user.name}
+                    </Text>
+                </YStack>
+            </YStack>
+
+            {/* Card de Informações do Usuário */}
+            <Card
+                backgroundColor="$backgroundHover"
+                borderRadius="$4"
+                padding="$3"
+                borderWidth={1}
+                borderColor="$borderColor"
+            >
+                <XStack justifyContent="space-between" alignItems="flex-start">
+                    <YStack gap="$1" flex={1}>
+                        <Text fontSize="$4" fontWeight="700" color="$color">
+                            Informações do usuário
+                        </Text>
+                        <Text fontSize="$2" color="$color">
+                            Usuário: {user.username}
+                        </Text>
+                        <Text fontSize="$2" color="$color">
+                            E-mail: {user.email}
+                        </Text>
+                        {user.externalUserId && (
                             <Text fontSize="$2" color="$color">
-                                Usuário: {user.username}
+                                ID: {user.externalUserId}
                             </Text>
-                            <Text fontSize="$2" color="$color">
-                                E-mail: {user.email}
-                            </Text>
-                            {user.phone && (
-                                <Text fontSize="$2" color="$color">
-                                    Telefone: {user.phone}
-                                </Text>
-                            )}
-                            
-                            {user.location && (
-                                <Text fontSize="$2" color="$color">
-                                    Localização: {user.location}
-                                </Text>
-                            )}
-                            {user.externalUserId && (
-                                <Text fontSize="$2" color="$color">
-                                    ID: {user.externalUserId}
-                                </Text>
-                            )}
-                        </YStack>
-                        <Button
-                            size="$8"
-                            icon={LogOut}
-                            chromeless
-                            onPress={handleLogout}
-                            pressStyle={{
-                                scale: 0.9
-                            }}
-                        />
-                    </XStack>
-                </Card>
+                        )}
+                    </YStack>
+                    <Button
+                        size="$8"
+                        icon={LogOut}
+                        chromeless
+                        onPress={handleLogout}
+                        pressStyle={{
+                            scale: 0.9
+                        }}
+                    />
+                </XStack>
+            </Card>
 
-                {/* Card de Informações da Empresa/Filial */}
-                {companyBranch && (
-                    <Card
-                        backgroundColor="$backgroundHover"
-                        borderRadius="$4"
-                        padding="$3"
-                        borderWidth={1}
-                        borderColor="$borderColor"
-                        marginTop="$2"
-                    >
-                        <YStack gap="$2">
-                            <XStack alignItems="center" gap="$2">
-                                <Building2 size={16} color="$color" />
-                                <Text fontSize="$4" fontWeight="700" color="$color">
-                                    Informações da Empresa
-                                </Text>
-                            </XStack>
-                            
-                            <YStack gap="$1" paddingTop="$1">
-                                <Text fontSize="$3" fontWeight="600" color="$color">
-                                    {companyBranch.fantasia}
-                                </Text>
-                                <Text fontSize="$2" color="$color">
-                                    Razão Social: {companyBranch.razao}
-                                </Text>
-                                {companyBranch.cnpj && (
-                                    <Text fontSize="$2" color="$color">
-                                        CNPJ: {companyBranch.cnpj}
-                                    </Text>
-                                )}
-                                {companyBranch.telefone && (
-                                    <Text fontSize="$2" color="$color">
-                                        Telefone: {companyBranch.telefone}
-                                    </Text>
-                                )}
-                                {companyBranch.email && (
-                                    <Text fontSize="$2" color="$color">
-                                        E-mail: {companyBranch.email}
-                                    </Text>
-                                )}
-                                {companyBranch.whatsapp && (
-                                    <Text fontSize="$2" color="$color">
-                                        WhatsApp: {companyBranch.whatsapp}
-                                    </Text>
-                                )}
-                                {companyBranch.endereco && (
-                                    <Text fontSize="$2" color="$color">
-                                        Endereço: {companyBranch.endereco}, {companyBranch.numero}
-                                        {companyBranch.complemento && ` - ${companyBranch.complemento}`}
-                                    </Text>
-                                )}
-                                {companyBranch.bairro && (
-                                    <Text fontSize="$2" color="$color">
-                                        Bairro: {companyBranch.bairro}
-                                    </Text>
-                                )}
-                                {companyBranch.cep && (
-                                    <Text fontSize="$2" color="$color">
-                                        CEP: {companyBranch.cep}
-                                    </Text>
-                                )}
-                            </YStack>
-                        </YStack>
-                    </Card>
-                )}
-
-                {/* Loading da empresa */}
-                {isLoadingCompany && !companyBranch && (
-                    <Card
-                        backgroundColor="$backgroundHover"
-                        borderRadius="$4"
-                        padding="$3"
-                        borderWidth={1}
-                        borderColor="$borderColor"
-                        marginTop="$2"
-                    >
-                        <XStack alignItems="center" gap="$2">
-                            <Spinner size="small" color="$color" />
-                            <Text fontSize="$3" color="$color">
-                                Carregando informações da empresa...
-                            </Text>
-                        </XStack>
-                    </Card>
-                )}
-
-                {/* Informações da Rede - Acordeão */}
+            {/* Card de Informações da Empresa/Filial */}
+            {companyBranch && (
                 <Card
                     backgroundColor="$backgroundHover"
                     borderRadius="$4"
@@ -335,106 +251,190 @@ export default function Perfil() {
                     borderWidth={1}
                     borderColor="$borderColor"
                     marginTop="$2"
-                    pressStyle={{
-                        scale: 0.98
-                    }}
-                    onPress={() => setIsNetworkExpanded(!isNetworkExpanded)}
                 >
-                    <XStack justifyContent="space-between" alignItems="center">
+                    <YStack gap="$2">
                         <XStack alignItems="center" gap="$2">
-                            <Wifi size={16} color="$color" />
+                            <Building2 size={16} color="$color" />
                             <Text fontSize="$4" fontWeight="700" color="$color">
-                                Informações da rede
+                                Informações da Empresa
                             </Text>
                         </XStack>
-                        
-                        {isNetworkExpanded ? (
-                            <ChevronUp size={20} color="$color" />
-                        ) : (
-                            <ChevronDown size={20} color="$color" />
-                        )}
-                    </XStack>
-                    
-                    {isNetworkExpanded && (
-                        <YStack gap="$1" marginTop="$2" paddingTop="$2" borderTopWidth={1} borderTopColor="$borderColor">
-                            {networkInfo ? (
-                                <>
-                                    <Text fontSize="$2" color="$color">
-                                        Tipo: {networkInfo.type || 'Desconhecido'}
-                                    </Text>
-                                    <Text fontSize="$2" color="$color">
-                                        Conectado: {networkInfo.isConnected ? 'Sim' : 'Não'}
-                                    </Text>
-                                    {networkInfo.type === 'wifi' && (
-                                        <>
-                                            {networkInfo.details?.ssid ? (
-                                                <Text fontSize="$2" color="$color">
-                                                    SSID: {networkInfo?.details?.ssid}
-                                                </Text>
-                                            ) : (
-                                                <Text fontSize="$2" color="$color" opacity={0.6}>
-                                                    SSID: {Platform.OS === 'ios' && !locationPermission 
-                                                        ? 'Requer permissão de localização' 
-                                                        : 'Não disponível'}
-                                                </Text>
-                                            )}
-                                            {networkInfo.details?.bssid && (
-                                                <Text fontSize="$2" color="$color">
-                                                    BSSID: {networkInfo.details.bssid}
-                                                </Text>
-                                            )}
-                                            {networkInfo.details?.strength && (
-                                                <Text fontSize="$2" color="$color">
-                                                    Força: {networkInfo.details.strength}%
-                                                </Text>
-                                            )}
-                                            {networkInfo.details?.ipAddress && (
-                                                <Text fontSize="$2" color="$color">
-                                                    IP: {networkInfo.details.ipAddress}
-                                                </Text>
-                                            )}
-                                            {networkInfo.details?.subnet && (
-                                                <Text fontSize="$2" color="$color">
-                                                    Máscara de rede: {networkInfo.details.subnet}
-                                                </Text>
-                                            )}
-                                            {networkInfo.details?.frequency && (
-                                                <Text fontSize="$2" color="$color">
-                                                    Frequência: {networkInfo.details.frequency} MHz
-                                                </Text>
-                                            )}
-                                        </>
-                                    )}
-                                    {networkInfo.type === 'cellular' && (
-                                        <>
-                                            {networkInfo.details?.cellularGeneration && (
-                                                <Text fontSize="$2" color="$color">
-                                                    Geração: {networkInfo.details.cellularGeneration}
-                                                </Text>
-                                            )}
-                                            {networkInfo.details?.carrier && (
-                                                <Text fontSize="$2" color="$color">
-                                                    Operadora: {networkInfo.details.carrier}
-                                                </Text>
-                                            )}
-                                        </>
-                                    )}
-                                    <Text fontSize="$2" color="$color">
-                                        Internet: {networkInfo.isInternetReachable ? 'Disponível' : 'Indisponível'}
-                                    </Text>
-                                </>
-                            ) : (
+
+                        <YStack gap="$1" paddingTop="$1">
+                            <Text fontSize="$3" fontWeight="600" color="$color">
+                                {companyBranch.fantasia}
+                            </Text>
+                            <Text fontSize="$2" color="$color">
+                                Razão Social: {companyBranch.razao_social}
+                            </Text>
+                            {companyBranch.cnpj && (
                                 <Text fontSize="$2" color="$color">
-                                    Carregando informações...
+                                    CNPJ: {companyBranch.cnpj}
+                                </Text>
+                            )}
+                            {companyBranch.telefone && (
+                                <Text fontSize="$2" color="$color">
+                                    Telefone: {companyBranch.telefone}
+                                </Text>
+                            )}
+                            {companyBranch.email && (
+                                <Text fontSize="$2" color="$color">
+                                    E-mail: {companyBranch.email}
+                                </Text>
+                            )}
+                            {companyBranch.whatsapp && (
+                                <Text fontSize="$2" color="$color">
+                                    WhatsApp: {companyBranch.whatsapp}
+                                </Text>
+                            )}
+                            {companyBranch.endereco && (
+                                <Text fontSize="$2" color="$color">
+                                    Endereço: {companyBranch.endereco}, {companyBranch.numero}
+                                    {companyBranch.complemento && ` - ${companyBranch.complemento}`}
+                                </Text>
+                            )}
+                            {companyBranch.bairro && (
+                                <Text fontSize="$2" color="$color">
+                                    Bairro: {companyBranch.bairro}
+                                </Text>
+                            )}
+                            {companyBranch.cep && (
+                                <Text fontSize="$2" color="$color">
+                                    CEP: {companyBranch.cep}
                                 </Text>
                             )}
                         </YStack>
-                    )}
+                    </YStack>
                 </Card>
+            )}
 
-               
+            {/* Loading da empresa */}
+            {isLoadingCompany && !companyBranch && (
+                <Card
+                    backgroundColor="$backgroundHover"
+                    borderRadius="$4"
+                    padding="$3"
+                    borderWidth={1}
+                    borderColor="$borderColor"
+                    marginTop="$2"
+                >
+                    <XStack alignItems="center" gap="$2">
+                        <Spinner size="small" color="$color" />
+                        <Text fontSize="$3" color="$color">
+                            Carregando informações da empresa...
+                        </Text>
+                    </XStack>
+                </Card>
+            )}
 
-                
-            </YStack>
+            {/* Informações da Rede - Acordeão */}
+            <Card
+                backgroundColor="$backgroundHover"
+                borderRadius="$4"
+                padding="$3"
+                borderWidth={1}
+                borderColor="$borderColor"
+                marginTop="$2"
+                pressStyle={{
+                    scale: 0.98
+                }}
+                onPress={() => setIsNetworkExpanded(!isNetworkExpanded)}
+            >
+                <XStack justifyContent="space-between" alignItems="center">
+                    <XStack alignItems="center" gap="$2">
+                        <Wifi size={16} color="$color" />
+                        <Text fontSize="$4" fontWeight="700" color="$color">
+                            Informações da rede
+                        </Text>
+                    </XStack>
+
+                    {isNetworkExpanded ? (
+                        <ChevronUp size={20} color="$color" />
+                    ) : (
+                        <ChevronDown size={20} color="$color" />
+                    )}
+                </XStack>
+
+                {isNetworkExpanded && (
+                    <YStack gap="$1" marginTop="$2" paddingTop="$2" borderTopWidth={1} borderTopColor="$borderColor">
+                        {networkInfo ? (
+                            <>
+                                <Text fontSize="$2" color="$color">
+                                    Tipo: {networkInfo.type || 'Desconhecido'}
+                                </Text>
+                                <Text fontSize="$2" color="$color">
+                                    Conectado: {networkInfo.isConnected ? 'Sim' : 'Não'}
+                                </Text>
+                                {networkInfo.type === 'wifi' && (
+                                    <>
+                                        {networkInfo.details?.ssid ? (
+                                            <Text fontSize="$2" color="$color">
+                                                SSID: {networkInfo?.details?.ssid}
+                                            </Text>
+                                        ) : (
+                                            <Text fontSize="$2" color="$color" opacity={0.6}>
+                                                SSID: {Platform.OS === 'ios' && !locationPermission
+                                                    ? 'Requer permissão de localização'
+                                                    : 'Não disponível'}
+                                            </Text>
+                                        )}
+                                        {networkInfo.details?.bssid && (
+                                            <Text fontSize="$2" color="$color">
+                                                BSSID: {networkInfo.details.bssid}
+                                            </Text>
+                                        )}
+                                        {networkInfo.details?.strength && (
+                                            <Text fontSize="$2" color="$color">
+                                                Força: {networkInfo.details.strength}%
+                                            </Text>
+                                        )}
+                                        {networkInfo.details?.ipAddress && (
+                                            <Text fontSize="$2" color="$color">
+                                                IP: {networkInfo.details.ipAddress}
+                                            </Text>
+                                        )}
+                                        {networkInfo.details?.subnet && (
+                                            <Text fontSize="$2" color="$color">
+                                                Máscara de rede: {networkInfo.details.subnet}
+                                            </Text>
+                                        )}
+                                        {networkInfo.details?.frequency && (
+                                            <Text fontSize="$2" color="$color">
+                                                Frequência: {networkInfo.details.frequency} MHz
+                                            </Text>
+                                        )}
+                                    </>
+                                )}
+                                {networkInfo.type === 'cellular' && (
+                                    <>
+                                        {networkInfo.details?.cellularGeneration && (
+                                            <Text fontSize="$2" color="$color">
+                                                Geração: {networkInfo.details.cellularGeneration}
+                                            </Text>
+                                        )}
+                                        {networkInfo.details?.carrier && (
+                                            <Text fontSize="$2" color="$color">
+                                                Operadora: {networkInfo.details.carrier}
+                                            </Text>
+                                        )}
+                                    </>
+                                )}
+                                <Text fontSize="$2" color="$color">
+                                    Internet: {networkInfo.isInternetReachable ? 'Disponível' : 'Indisponível'}
+                                </Text>
+                            </>
+                        ) : (
+                            <Text fontSize="$2" color="$color">
+                                Carregando informações...
+                            </Text>
+                        )}
+                    </YStack>
+                )}
+            </Card>
+
+
+
+
+        </YStack>
     );
 }

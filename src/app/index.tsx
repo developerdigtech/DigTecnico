@@ -81,7 +81,7 @@ export default function LoginPage() {
         password: password,
       });
 
-      console.log('Login realizado com sucesso:', response.user);
+      //console.log('Login realizado com sucesso:', response.user);
 
       // Redireciona para a tela Home
       router.replace("/(tabs)/Home");
