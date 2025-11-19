@@ -38,7 +38,7 @@ const PedidosTab = () => {
     text: isDarkMode ? '#FFFFFF' : '#000000',
     secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
     background: isDarkMode ? '#000000' : '#F8F9FA',
-    primary: '#22C55E',
+    primary: '#11b3e4ff',
     border: isDarkMode ? '#333333' : '#E0E0E0',
     accent: isDarkMode ? '#374151' : '#F3F4F6',
     warning: '#F59E0B',
@@ -106,15 +106,15 @@ const PedidosTab = () => {
   };
 
   const getTipoIcon = (tipo: string) => {
-    return tipo === 'entrada' ? 
-      <ArrowDown size={16} color={colors.primary} /> : 
+    return tipo === 'entrada' ?
+      <ArrowDown size={16} color={colors.primary} /> :
       <ArrowUp size={16} color={colors.info} />;
   };
 
   const handleSubmitPedido = () => {
     // Aqui você implementaria a lógica para enviar o pedido
     console.log('Novo pedido:', novoPedido);
-    
+
     // Reset form
     setNovoPedido({
       produto: '',
@@ -124,7 +124,7 @@ const PedidosTab = () => {
       tipo: 'entrada',
       destinatario: '',
     });
-    
+
     // Voltar para a aba de pedidos
     setActiveTab('pedidos');
   };
@@ -154,7 +154,7 @@ const PedidosTab = () => {
   const PedidoListItem = ({ pedido }: { pedido: PedidoItem }) => (
     <ListItem
       hoverTheme
-      pressTheme  
+      pressTheme
       backgroundColor={colors.cardBackground}
       borderRadius="$4"
       marginBottom="$2"
@@ -178,13 +178,13 @@ const PedidosTab = () => {
           <XStack alignItems="center" gap="$3" flex={1}>
             <Avatar circular size="$5" backgroundColor={getStatusColor(pedido.status)}>
               <Avatar.Image src={undefined} />
-              <Avatar.Fallback 
+              <Avatar.Fallback
                 backgroundColor={getStatusColor(pedido.status)}
                 justifyContent="center"
                 alignItems="center"
               >
-                {pedido.tipo === 'entrada' ? 
-                  <ArrowDown size={18} color="white" /> : 
+                {pedido.tipo === 'entrada' ?
+                  <ArrowDown size={18} color="white" /> :
                   <ArrowUp size={18} color="white" />
                 }
               </Avatar.Fallback>
@@ -219,7 +219,7 @@ const PedidosTab = () => {
         <Text fontSize={14} fontWeight="500" color={colors.text}>
           Status dos Pedidos
         </Text>
-        
+
         <XStack gap="$2">
           <YStack flex={1} ai={'center'}>
             <ListItem
@@ -243,7 +243,7 @@ const PedidosTab = () => {
               <ListItem.Text>
                 <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
                   <Avatar circular size="$3" backgroundColor={colors.warning}>
-                    <Avatar.Fallback 
+                    <Avatar.Fallback
                       backgroundColor={colors.warning}
                       justifyContent="center"
                       alignItems="center"
@@ -286,7 +286,7 @@ const PedidosTab = () => {
               <ListItem.Text>
                 <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
                   <Avatar circular size="$3" backgroundColor={colors.info}>
-                    <Avatar.Fallback 
+                    <Avatar.Fallback
                       backgroundColor={colors.info}
                       justifyContent="center"
                       alignItems="center"
@@ -329,7 +329,7 @@ const PedidosTab = () => {
               <ListItem.Text>
                 <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
                   <Avatar circular size="$3" backgroundColor={colors.primary}>
-                    <Avatar.Fallback 
+                    <Avatar.Fallback
                       backgroundColor={colors.primary}
                       justifyContent="center"
                       alignItems="center"
@@ -357,7 +357,7 @@ const PedidosTab = () => {
         <Text fontSize={16} fontWeight="600" color={colors.text}>
           Pedidos Recentes
         </Text>
-        
+
         <YStack gap="$1">
           {mockPedidos.map((pedido, index) => (
             <React.Fragment key={pedido.id}>
@@ -387,7 +387,7 @@ const PedidosTab = () => {
             bg={novoPedido.tipo === 'entrada' ? colors.primary : 'transparent'}
             borderWidth={1}
             borderColor={novoPedido.tipo === 'entrada' ? colors.primary : colors.border}
-            onPress={() => setNovoPedido({...novoPedido, tipo: 'entrada'})}
+            onPress={() => setNovoPedido({ ...novoPedido, tipo: 'entrada' })}
           >
             <XStack alignItems="center" gap="$2">
               <ArrowDown size={16} />
@@ -401,7 +401,7 @@ const PedidosTab = () => {
             bg={novoPedido.tipo === 'saida' ? colors.info : 'transparent'}
             borderWidth={1}
             borderColor={novoPedido.tipo === 'saida' ? colors.info : colors.border}
-            onPress={() => setNovoPedido({...novoPedido, tipo: 'saida'})}
+            onPress={() => setNovoPedido({ ...novoPedido, tipo: 'saida' })}
           >
             <XStack alignItems="center" gap="$2">
               <ArrowUp size={16} />
@@ -423,7 +423,7 @@ const PedidosTab = () => {
           bg={colors.cardBackground}
           borderColor={colors.border}
           value={novoPedido.produto}
-          onChangeText={(text) => setNovoPedido({...novoPedido, produto: text})}
+          onChangeText={(text) => setNovoPedido({ ...novoPedido, produto: text })}
         />
       </YStack>
 
@@ -437,7 +437,7 @@ const PedidosTab = () => {
           bg={colors.cardBackground}
           borderColor={colors.border}
           value={novoPedido.codigo}
-          onChangeText={(text) => setNovoPedido({...novoPedido, codigo: text})}
+          onChangeText={(text) => setNovoPedido({ ...novoPedido, codigo: text })}
         />
       </YStack>
 
@@ -452,7 +452,7 @@ const PedidosTab = () => {
           borderColor={colors.border}
           keyboardType="numeric"
           value={novoPedido.quantidade}
-          onChangeText={(text) => setNovoPedido({...novoPedido, quantidade: text})}
+          onChangeText={(text) => setNovoPedido({ ...novoPedido, quantidade: text })}
         />
       </YStack>
 
@@ -467,7 +467,7 @@ const PedidosTab = () => {
             bg={colors.cardBackground}
             borderColor={colors.border}
             value={novoPedido.destinatario}
-            onChangeText={(text) => setNovoPedido({...novoPedido, destinatario: text})}
+            onChangeText={(text) => setNovoPedido({ ...novoPedido, destinatario: text })}
           />
         </YStack>
       )}
@@ -482,7 +482,7 @@ const PedidosTab = () => {
           bg={colors.cardBackground}
           borderColor={colors.border}
           value={novoPedido.observacao}
-          onChangeText={(text) => setNovoPedido({...novoPedido, observacao: text})}
+          onChangeText={(text) => setNovoPedido({ ...novoPedido, observacao: text })}
         />
       </YStack>
 
@@ -513,7 +513,7 @@ const PedidosTab = () => {
 
   const renderPedidoDetailsModal = () => {
     if (!selectedPedido) return null;
-    
+
     const { height: screenHeight, width: screenWidth } = Dimensions.get('screen');
 
     return (
@@ -525,8 +525,8 @@ const PedidosTab = () => {
         onRequestClose={handleClosePedidoDetails}
       >
         {/* Container absoluto que cobre TODA a tela incluindo tab bar */}
-        <View 
-          style={{ 
+        <View
+          style={{
             position: 'absolute',
             top: 0,
             left: 0,
@@ -537,15 +537,15 @@ const PedidosTab = () => {
             elevation: 999999999,
           }}
         >
-          <Pressable 
-            style={{ 
+          <Pressable
+            style={{
               flex: 1,
               justifyContent: 'flex-end'
-            }} 
+            }}
             onPress={handleClosePedidoDetails}
           >
             <Pressable onPress={(e) => e.stopPropagation()}>
-              <YStack 
+              <YStack
                 backgroundColor={colors.background}
                 borderTopLeftRadius={24}
                 borderTopRightRadius={24}
@@ -564,7 +564,7 @@ const PedidosTab = () => {
               >
                 {/* Handle melhorado */}
                 <YStack alignItems="center" paddingVertical="$4">
-                  <YStack 
+                  <YStack
                     width={50}
                     height={5}
                     backgroundColor={colors.secondaryText}
@@ -574,13 +574,13 @@ const PedidosTab = () => {
                 </YStack>
 
                 {/* ScrollView com configuração corrigida */}
-                <ScrollView 
+                <ScrollView
                   showsVerticalScrollIndicator={true}
-                  style={{ 
+                  style={{
                     flex: 1,
                     maxHeight: '100%'
                   }}
-                  contentContainerStyle={{ 
+                  contentContainerStyle={{
                     paddingBottom: 60,
                     paddingHorizontal: 20,
                     paddingTop: 12,
@@ -601,7 +601,7 @@ const PedidosTab = () => {
                           Detalhes do Pedido
                         </Text>
                         <Text fontSize={12} color={colors.secondaryText} opacity={0.8}>
-                          Revise as informações 
+                          Revise as informações
                         </Text>
                       </YStack>
                       <Button
@@ -618,7 +618,7 @@ const PedidosTab = () => {
                     </XStack>
 
                     {/* Status e Tipo - Card destacado */}
-                    <YStack 
+                    <YStack
                       backgroundColor={colors.cardBackground}
                       borderRadius="$4"
                       borderWidth={1}
@@ -637,25 +637,25 @@ const PedidosTab = () => {
                     >
                       <XStack gap="$3" alignItems="center">
                         <Avatar circular size="$5" backgroundColor={getStatusColor(selectedPedido.status)}>
-                          <Avatar.Fallback 
+                          <Avatar.Fallback
                             backgroundColor={getStatusColor(selectedPedido.status)}
                             justifyContent="center"
                             alignItems="center"
                           >
-                            {selectedPedido.tipo === 'entrada' ? 
-                              <ArrowDown size={20} color="white" /> : 
+                            {selectedPedido.tipo === 'entrada' ?
+                              <ArrowDown size={20} color="white" /> :
                               <ArrowUp size={20} color="white" />
                             }
                           </Avatar.Fallback>
                         </Avatar>
-                        
+
                         <YStack flex={1} gap="$1">
                           <Text fontSize={16} fontWeight="600" color={colors.text}>
                             {selectedPedido.produto}
                           </Text>
-                          
+
                           <XStack alignItems="center" gap="$2">
-                            <YStack 
+                            <YStack
                               backgroundColor={getStatusColor(selectedPedido.status)}
                               paddingHorizontal="$2"
                               paddingVertical="$1"
@@ -663,12 +663,12 @@ const PedidosTab = () => {
                             >
                               <Text fontSize={10} color="white" fontWeight="600" letterSpacing={0.3}>
                                 {selectedPedido.status === 'pendente' ? 'PENDENTE' :
-                                 selectedPedido.status === 'aprovado' ? 'APROVADO' :
-                                 selectedPedido.status === 'entregue' ? 'ENTREGUE' : 'REJEITADO'}
+                                  selectedPedido.status === 'aprovado' ? 'APROVADO' :
+                                    selectedPedido.status === 'entregue' ? 'ENTREGUE' : 'REJEITADO'}
                               </Text>
                             </YStack>
-                            
-                            <YStack 
+
+                            <YStack
                               backgroundColor={selectedPedido.tipo === 'entrada' ? colors.primary + '20' : colors.info + '20'}
                               paddingHorizontal="$2"
                               paddingVertical="$1"
@@ -676,9 +676,9 @@ const PedidosTab = () => {
                               borderWidth={1}
                               borderColor={selectedPedido.tipo === 'entrada' ? colors.primary : colors.info}
                             >
-                              <Text 
-                                fontSize={10} 
-                                color={selectedPedido.tipo === 'entrada' ? colors.primary : colors.info} 
+                              <Text
+                                fontSize={10}
+                                color={selectedPedido.tipo === 'entrada' ? colors.primary : colors.info}
                                 fontWeight="600"
                                 letterSpacing={0.3}
                               >
@@ -686,7 +686,7 @@ const PedidosTab = () => {
                               </Text>
                             </YStack>
                           </XStack>
-                          
+
                           {/* Quantidade destacada */}
                           <XStack alignItems="baseline" gap="$1">
                             <Text fontSize={18} fontWeight="700" color={colors.text}>
@@ -701,7 +701,7 @@ const PedidosTab = () => {
                     </YStack>
 
                     {/* Informações do Produto */}
-                    <YStack 
+                    <YStack
                       backgroundColor={colors.cardBackground}
                       borderRadius="$3"
                       borderWidth={1}
@@ -768,7 +768,7 @@ const PedidosTab = () => {
                             <Separator marginVertical="$1" borderColor={colors.border} />
                             <YStack gap="$1">
                               <Text fontSize={13} color={colors.secondaryText} fontWeight="500">Observação:</Text>
-                              <YStack 
+                              <YStack
                                 backgroundColor={colors.background}
                                 borderRadius="$2"
                                 padding="$2"
@@ -796,7 +796,7 @@ const PedidosTab = () => {
                             Aprove ou recuse este pedido de movimentação
                           </Text>
                         </YStack>
-                        
+
                         <YStack gap="$2">
                           <Button
                             size="$4"
@@ -812,7 +812,7 @@ const PedidosTab = () => {
                               </Text>
                             </XStack>
                           </Button>
-                          
+
                           <Button
                             size="$4"
                             backgroundColor="transparent"
@@ -840,9 +840,9 @@ const PedidosTab = () => {
         </View>
       </Modal>
     );
-  };  return (
+  }; return (
     <>
-      <ScrollView 
+      <ScrollView
         style={{ flex: 1, backgroundColor: colors.background }}
         showsVerticalScrollIndicator={false}
       >

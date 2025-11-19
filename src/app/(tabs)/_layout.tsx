@@ -18,9 +18,9 @@ const TabIcon = ({ Icon, color, isFocused, label, tabIndex }: TabIconProps & { t
     const pathname = usePathname();
 
     const colors = {
-        activeBackground: '#22C55E',
+        activeBackground: '#11b3e4ff',
         activeIcon: '#FFFFFF',
-        activeText: '#22C55E',
+        activeText: '#11b3e4ff',
         inactiveIcon: isDarkMode ? '#A0A0A0' : '#6B7280',
         inactiveText: isDarkMode ? '#A0A0A0' : '#6B7280',
     };
@@ -38,9 +38,9 @@ const TabIcon = ({ Icon, color, isFocused, label, tabIndex }: TabIconProps & { t
     const slideDirection = activeIndex > tabIndex ? -30 : 30;
 
     return (
-        <YStack 
-            alignItems="center" 
-            justifyContent="center" 
+        <YStack
+            alignItems="center"
+            justifyContent="center"
             gap={4}
             animation="quick"
             scale={isFocused ? 1 : 0.9}
@@ -61,7 +61,7 @@ const TabIcon = ({ Icon, color, isFocused, label, tabIndex }: TabIconProps & { t
                     scale={isFocused ? 1 : 0.9}
                     x={isFocused ? 0 : (activeIndex > tabIndex ? -15 : 15)}
                 />
-                
+
                 {/* Container do ícone */}
                 <YStack
                     alignItems="center"
@@ -70,14 +70,14 @@ const TabIcon = ({ Icon, color, isFocused, label, tabIndex }: TabIconProps & { t
                     paddingHorizontal={12}
                     zIndex={2}
                 >
-                    <Icon 
-                        size={24} 
-                        color={isFocused ? colors.activeIcon : colors.inactiveIcon} 
-                        strokeWidth={isFocused ? 2.5 : 2} 
+                    <Icon
+                        size={24}
+                        color={isFocused ? colors.activeIcon : colors.inactiveIcon}
+                        strokeWidth={isFocused ? 2.5 : 2}
                     />
                 </YStack>
             </YStack >
-            
+
             <Text
                 fontSize={10}
                 fontWeight={isFocused ? "bold" : "600"}
@@ -102,7 +102,7 @@ export default function TabsLayout() {
     const colors = {
         tabBarBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
         tabBarBorder: isDarkMode ? '#333333' : '#E0E0E0',
-        activeTint: '#22C55E',
+        activeTint: '#11b3e4ff',
         inactiveTint: isDarkMode ? '#A0A0A0' : '#6B7280',
         shadowColor: isDarkMode ? '#000000' : '#000000',
     };
@@ -118,51 +118,51 @@ export default function TabsLayout() {
 
     const activeTabIndex = getActiveTabIndex();
     const indicatorLeft = activeTabIndex * 25; // 25% por tab
-    
+
     return (
         <Tabs
-                screenOptions={{
-                    headerShown: false,
-                    tabBarActiveTintColor: colors.activeTint,
-                    tabBarInactiveTintColor: colors.inactiveTint,
-                    tabBarStyle: {
-                        backgroundColor: colors.tabBarBackground,
-                        borderTopWidth: 1,
-                        borderTopColor: colors.tabBarBorder,
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        elevation: isAndroid ? 20 : 30,
-                        shadowColor: colors.shadowColor,
-                        shadowOffset: { 
-                            width: 0, 
-                            height: -8 
-                        },
-                        shadowOpacity: isDarkMode ? 0.5 : 0.2,
-                        shadowRadius: 24,
-                        paddingBottom: insets.bottom > 0 ? insets.bottom : 16,
-                        paddingTop: 16,
-                        height: (insets.bottom > 0 ? insets.bottom : 16) + 76,
-                        borderTopLeftRadius: 30,
-                        borderTopRightRadius: 30,
+            screenOptions={{
+                headerShown: false,
+                tabBarActiveTintColor: colors.activeTint,
+                tabBarInactiveTintColor: colors.inactiveTint,
+                tabBarStyle: {
+                    backgroundColor: colors.tabBarBackground,
+                    borderTopWidth: 1,
+                    borderTopColor: colors.tabBarBorder,
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    elevation: isAndroid ? 20 : 30,
+                    shadowColor: colors.shadowColor,
+                    shadowOffset: {
+                        width: 0,
+                        height: -8
                     },
-                    tabBarItemStyle: {
-                        paddingVertical: 8,
-                    },
-                    tabBarShowLabel: false,
-                    tabBarHideOnKeyboard: true,
-                }}
-            >
+                    shadowOpacity: isDarkMode ? 0.5 : 0.2,
+                    shadowRadius: 24,
+                    paddingBottom: insets.bottom > 0 ? insets.bottom : 16,
+                    paddingTop: 16,
+                    height: (insets.bottom > 0 ? insets.bottom : 16) + 76,
+                    borderTopLeftRadius: 30,
+                    borderTopRightRadius: 30,
+                },
+                tabBarItemStyle: {
+                    paddingVertical: 8,
+                },
+                tabBarShowLabel: false,
+                tabBarHideOnKeyboard: true,
+            }}
+        >
             <Tabs.Screen
                 name='Home/index'
                 options={{
                     title: "Home",
                     tabBarIcon: ({ color, focused }) => (
-                        <TabIcon 
-                            Icon={Home} 
+                        <TabIcon
+                            Icon={Home}
                             color={color}
-                            isFocused={focused} 
+                            isFocused={focused}
                             label="Home"
                             tabIndex={0}
                         />
@@ -174,10 +174,10 @@ export default function TabsLayout() {
                 options={{
                     title: "Buscar",
                     tabBarIcon: ({ color, focused }) => (
-                        <TabIcon 
-                            Icon={Search} 
+                        <TabIcon
+                            Icon={Search}
                             color={color}
-                            isFocused={focused} 
+                            isFocused={focused}
                             label="buscar"
                             tabIndex={1}
                         />
@@ -189,10 +189,10 @@ export default function TabsLayout() {
                 options={{
                     title: "Estoque",
                     tabBarIcon: ({ color, focused }) => (
-                        <TabIcon 
-                            Icon={Archive} 
+                        <TabIcon
+                            Icon={Archive}
                             color={color}
-                            isFocused={focused} 
+                            isFocused={focused}
                             label="Estoque"
                             tabIndex={2}
                         />
@@ -204,10 +204,10 @@ export default function TabsLayout() {
                 options={{
                     title: "Perfil",
                     tabBarIcon: ({ color, focused }) => (
-                        <TabIcon 
-                            Icon={User} 
+                        <TabIcon
+                            Icon={User}
                             color={color}
-                            isFocused={focused} 
+                            isFocused={focused}
                             label="Perfil"
                             tabIndex={3}
                         />

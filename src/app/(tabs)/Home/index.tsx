@@ -21,7 +21,7 @@ const HomeScreen = () => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { isDarkMode } = useThemeContext();
-  
+
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'dashboard', title: 'Visão Geral' },
@@ -35,7 +35,7 @@ const HomeScreen = () => {
     text: isDarkMode ? '#FFFFFF' : '#000000',
     secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
     border: isDarkMode ? '#333333' : '#E0E0E0',
-    primary: '#22C55E',
+    primary: '#11b3e4ff',
   };
 
   const renderScene = SceneMap({
@@ -47,12 +47,12 @@ const HomeScreen = () => {
   const renderTabBar = (props: any) => (
     <TabBar
       {...props}
-      indicatorStyle={{ 
+      indicatorStyle={{
         backgroundColor: colors.primary,
         height: 3,
         borderRadius: 2,
       }}
-      style={{ 
+      style={{
         backgroundColor: colors.cardBackground,
         borderBottomColor: colors.border,
         borderBottomWidth: 1,
@@ -71,8 +71,8 @@ const HomeScreen = () => {
   );
 
   return (
-    <YStack 
-      flex={1} 
+    <YStack
+      flex={1}
       backgroundColor={colors.background}
       paddingTop={insets.top}
     >

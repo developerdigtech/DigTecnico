@@ -23,7 +23,7 @@ const ClosedOrdersTab = () => {
     secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
     border: isDarkMode ? '#333333' : '#E0E0E0',
     primary: '#007AFF',
-    success: '#22C55E',
+    success: '#11b3e4ff',
   };
 
   const orders: Order[] = [

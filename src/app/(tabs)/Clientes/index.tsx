@@ -27,10 +27,10 @@ const Relatorios = () => {
     text: isDarkMode ? '#FFFFFF' : '#000000',
     secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
     background: isDarkMode ? '#000000' : '#F8F9FA',
-    primary: '#22C55E',
+    primary: '#11b3e4ff',
     border: isDarkMode ? '#333333' : '#E0E0E0',
     accent: isDarkMode ? '#374151' : '#F3F4F6',
-    success: '#22C55E',
+    success: '#11b3e4ff',
   };
 
   // Mock data - substitua por dados reais da sua API
@@ -66,7 +66,7 @@ const Relatorios = () => {
 
   const performSearch = () => {
     setHasSearched(true);
-    
+
     if (searchTerm.trim() === '') {
       setFilteredClients([]);
       return;
@@ -78,7 +78,7 @@ const Relatorios = () => {
       client.id.toString().includes(searchTerm) ||
       client.login.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
+
     setFilteredClients(filtered);
   };
 
@@ -95,7 +95,7 @@ const Relatorios = () => {
     >
       <YStack gap="$4">
         {/* Header do Card */}
-        <XStack alignItems="center"  justifyContent="space-between">
+        <XStack alignItems="center" justifyContent="space-between">
           <YStack flex={1}>
             <Text fontSize={20} fontWeight="500" color={colors.text}>
               {client.nome}
@@ -109,9 +109,9 @@ const Relatorios = () => {
         {/* Informações */}
         <YStack gap="$3">
           <XStack alignItems="center" gap="$3">
-            <YStack 
-              bg={colors.accent} 
-              padding="$2" 
+            <YStack
+              bg={colors.accent}
+              padding="$2"
               borderRadius="$2"
               width={32}
               height={32}
@@ -131,9 +131,9 @@ const Relatorios = () => {
           </XStack>
 
           <XStack alignItems="center" gap="$3">
-            <YStack 
-              bg={colors.accent} 
-              padding="$2" 
+            <YStack
+              bg={colors.accent}
+              padding="$2"
               borderRadius="$2"
               width={32}
               height={32}
@@ -153,9 +153,9 @@ const Relatorios = () => {
           </XStack>
 
           <XStack alignItems="center" gap="$3">
-            <YStack 
-              bg={colors.accent} 
-              padding="$2" 
+            <YStack
+              bg={colors.accent}
+              padding="$2"
               borderRadius="$2"
               width={32}
               height={32}
@@ -177,9 +177,9 @@ const Relatorios = () => {
 
         {/* Ações */}
         <XStack gap="$3" marginTop="$2">
-          <Button 
-            flex={1} 
-            size="$3" 
+          <Button
+            flex={1}
+            size="$3"
             bg={colors.primary}
             color="white"
             borderRadius="$2"
@@ -191,9 +191,9 @@ const Relatorios = () => {
               <Text color="white" fontSize={14}>Detalhes</Text>
             </XStack>
           </Button>
-          <Button 
-            flex={1} 
-            size="$3" 
+          <Button
+            flex={1}
+            size="$3"
             bg="transparent"
             borderWidth={1}
             borderColor={colors.border}
@@ -210,23 +210,23 @@ const Relatorios = () => {
   );
 
   return (
-    <ScrollView 
+    <ScrollView
       style={{ flex: 1, backgroundColor: colors.background }}
       showsVerticalScrollIndicator={false}
     >
       <YStack padding="$5" gap="$5" backgroundColor={colors.background} paddingBottom="$20">
         {/* Header Clean */}
         <YStack gap="$2" ai={'center'}>
-          <Text 
-            fontSize={28} 
-            fontWeight="900" 
+          <Text
+            fontSize={28}
+            fontWeight="900"
             color={colors.text}
             mt={"$3"}
           >
             Clientes
           </Text>
-          <Text 
-            fontSize={15} 
+          <Text
+            fontSize={15}
             color={colors.secondaryText}
             lineHeight={22}
           >
@@ -276,7 +276,7 @@ const Relatorios = () => {
             pressStyle={{ scale: 0.95, backgroundColor: '#16A34A' }}
             hoverStyle={{ backgroundColor: '#16A34A' }}
             onPress={performSearch}
-            shadowColor="#22C55E"
+            shadowColor="#11b3e4ff"
             shadowOffset={{ width: 0, height: 4 }}
             shadowOpacity={0.3}
             shadowRadius={8}
@@ -289,9 +289,9 @@ const Relatorios = () => {
         {/* Search Results - só mostra após clicar no botão */}
         {hasSearched && (
           <YStack gap="$4">
-            <Text 
-              fontSize={18} 
-              fontWeight="400" 
+            <Text
+              fontSize={18}
+              fontWeight="400"
               color={colors.text}
             >
               {filteredClients.length} resultado{filteredClients.length !== 1 ? 's' : ''}
@@ -311,9 +311,9 @@ const Relatorios = () => {
                 borderColor={colors.border}
               >
                 <YStack alignItems="center" gap="$3">
-                  <YStack 
-                    bg={colors.accent} 
-                    padding="$4" 
+                  <YStack
+                    bg={colors.accent}
+                    padding="$4"
                     borderRadius="$4"
                     width={80}
                     height={80}
@@ -323,15 +323,15 @@ const Relatorios = () => {
                     <Search size={32} color={colors.secondaryText} />
                   </YStack>
                   <YStack alignItems="center" gap="$2">
-                    <Text 
-                      fontSize={16} 
+                    <Text
+                      fontSize={16}
                       color={colors.text}
                       fontWeight="400"
                     >
                       Nenhum cliente encontrado
                     </Text>
-                    <Text 
-                      fontSize={14} 
+                    <Text
+                      fontSize={14}
                       color={colors.secondaryText}
                       textAlign="center"
                     >
@@ -355,9 +355,9 @@ const Relatorios = () => {
             borderColor={colors.border}
           >
             <YStack alignItems="center" gap="$4" maxWidth={280}>
-              <YStack 
-                bg={colors.accent} 
-                padding="$4" 
+              <YStack
+                bg={colors.accent}
+                padding="$4"
                 borderRadius="$4"
                 width={80}
                 height={80}
@@ -366,18 +366,18 @@ const Relatorios = () => {
               >
                 <User size={32} color={colors.secondaryText} />
               </YStack>
-              
+
               <YStack alignItems="center" gap="$3">
-                <Text 
-                  fontSize={18} 
+                <Text
+                  fontSize={18}
                   color={colors.text}
                   fontWeight="400"
                   textAlign="center"
                 >
                   Busque por clientes
                 </Text>
-                <Text 
-                  fontSize={14} 
+                <Text
+                  fontSize={14}
                   color={colors.secondaryText}
                   textAlign="center"
                   lineHeight={20}

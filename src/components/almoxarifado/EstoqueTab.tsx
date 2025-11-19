@@ -29,7 +29,7 @@ const EstoqueTab = () => {
     text: isDarkMode ? '#FFFFFF' : '#000000',
     secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
     background: isDarkMode ? '#000000' : '#F8F9FA',
-    primary: '#22C55E',
+    primary: '#11b3e4ff',
     border: isDarkMode ? '#333333' : '#E0E0E0',
     accent: isDarkMode ? '#374151' : '#F3F4F6',
     warning: '#F59E0B',
@@ -90,7 +90,7 @@ const EstoqueTab = () => {
 
   const performSearch = () => {
     setHasSearched(true);
-    
+
     if (searchTerm.trim() === '') {
       setFilteredProducts([]);
       return;
@@ -101,7 +101,7 @@ const EstoqueTab = () => {
       product.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.categoria.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
+
     setFilteredProducts(filtered);
   };
 
@@ -139,7 +139,7 @@ const EstoqueTab = () => {
           <XStack alignItems="center" gap="$3" flex={1}>
             <Avatar circular size="$6" backgroundColor={getStatusColor(product.status)}>
               <Avatar.Image src={undefined} />
-              <Avatar.Fallback 
+              <Avatar.Fallback
                 backgroundColor={getStatusColor(product.status)}
                 justifyContent="center"
                 alignItems="center"
@@ -180,16 +180,16 @@ const EstoqueTab = () => {
                 {product.unidade}
               </Text>
             </XStack>
-            
+
             <Text fontSize={12} color={colors.primary}>
               R$ {product.preco.toFixed(2)}/{product.unidade}
             </Text>
-            
+
             <XStack alignItems="center" justifyContent="center" gap="$1">
               {getStatusIcon(product.status)}
               <Text fontSize={10} color={getStatusColor(product.status)} textAlign="center">
-                {product.status === 'critico' ? 'Crítico' : 
-                 product.status === 'baixo' ? 'Baixo' : 'OK'}
+                {product.status === 'critico' ? 'Crítico' :
+                  product.status === 'baixo' ? 'Baixo' : 'OK'}
               </Text>
             </XStack>
           </YStack>
@@ -204,7 +204,7 @@ const EstoqueTab = () => {
   const lowStockProducts = mockProducts.filter(p => p.status === 'baixo').length;
 
   return (
-    <ScrollView 
+    <ScrollView
       style={{ flex: 1, backgroundColor: colors.background }}
       showsVerticalScrollIndicator={false}
     >
@@ -224,7 +224,7 @@ const EstoqueTab = () => {
           <Text fontSize={14} fontWeight="500" color={colors.text}>
             Resumo do Estoque
           </Text>
-          
+
           <XStack gap="$2">
             <YStack flex={1}>
               <ListItem
@@ -248,7 +248,7 @@ const EstoqueTab = () => {
                 <ListItem.Text>
                   <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
                     <Avatar circular size="$3" backgroundColor={colors.accent}>
-                      <Avatar.Fallback 
+                      <Avatar.Fallback
                         backgroundColor={colors.accent}
                         justifyContent="center"
                         alignItems="center"
@@ -291,7 +291,7 @@ const EstoqueTab = () => {
                 <ListItem.Text>
                   <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
                     <Avatar circular size="$3" backgroundColor={colors.warning}>
-                      <Avatar.Fallback 
+                      <Avatar.Fallback
                         backgroundColor={colors.warning}
                         justifyContent="center"
                         alignItems="center"
@@ -334,7 +334,7 @@ const EstoqueTab = () => {
                 <ListItem.Text>
                   <YStack alignItems="center" justifyContent="center" gap="$2" width="100%">
                     <Avatar circular size="$3" backgroundColor={colors.danger}>
-                      <Avatar.Fallback 
+                      <Avatar.Fallback
                         backgroundColor={colors.danger}
                         justifyContent="center"
                         alignItems="center"
@@ -441,7 +441,7 @@ const EstoqueTab = () => {
             <Text fontSize={16} fontWeight="500" color={colors.text}>
               Produtos em estoque
             </Text>
-            
+
             <YStack gap="$1">
               {mockProducts.map((product, index) => (
                 <React.Fragment key={product.id}>

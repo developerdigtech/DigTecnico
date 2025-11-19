@@ -5,7 +5,7 @@ import { ImageBackground, StyleSheet, TouchableWithoutFeedback, Keyboard, Alert,
 import { router } from 'expo-router';
 import { authService } from '../services/authService';
 
-const localLogo = require('../assets/image/logo-fibron.png')
+const localLogo = require('../assets/image/digtechBranco.png')
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -234,7 +234,7 @@ export default function LoginPage() {
                 width="100%"
                 color={'$black1'}
                 fontWeight={"bold"}
-                theme="accent"
+                bg={"#11b3e4ff"}
                 disabled={isLoading}
                 opacity={isLoading ? 0.6 : 1}
               >

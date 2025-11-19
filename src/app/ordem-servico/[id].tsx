@@ -4,13 +4,13 @@ import { YStack, XStack, Text, Button, Separator } from 'tamagui';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeContext } from '../../contexts/ThemeContext';
-import { 
-  ArrowLeft, 
-  User, 
-  MapPin, 
-  Phone, 
-  FileText, 
-  Clock, 
+import {
+  ArrowLeft,
+  User,
+  MapPin,
+  Phone,
+  FileText,
+  Clock,
   AlertCircle,
   Copy,
   CheckCircle2,
@@ -36,7 +36,7 @@ export default function OrdemServicoDetalhes() {
     text: isDarkMode ? '#FFFFFF' : '#000000',
     secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
     border: isDarkMode ? '#333333' : '#E0E0E0',
-    primary: '#22C55E',
+    primary: '#11b3e4ff',
     warning: '#F59E0B',
     danger: '#EF4444',
     info: '#3B82F6',
@@ -160,10 +160,10 @@ export default function OrdemServicoDetalhes() {
     </YStack>
   );
 
-  const InfoRow = ({ icon: Icon, label, value, copyable = false }: { 
-    icon: any; 
-    label: string; 
-    value: string; 
+  const InfoRow = ({ icon: Icon, label, value, copyable = false }: {
+    icon: any;
+    label: string;
+    value: string;
     copyable?: boolean;
   }) => (
     <XStack alignItems="flex-start" marginBottom="$2" gap="$2">
@@ -201,7 +201,7 @@ export default function OrdemServicoDetalhes() {
   // Componente para renderizar dados do cliente
   const DadosClienteTab = () => {
     const [clienteActiveTab, setClienteActiveTab] = useState('dados');
-    
+
     const clienteTabs = [
       { id: 'dados', label: 'DADOS DO CLIENTE' },
       { id: 'historico', label: 'HISTÓRICO DE O.S' }
@@ -329,15 +329,15 @@ export default function OrdemServicoDetalhes() {
   const AcoesTab = () => {
     // Ações que ficam inativas antes do check-in
     const acoesBloqueadas = ['Ativar contrato de Internet', 'Adicionar anotação à O.S'];
-    
+
     return (
       <YStack>
         {acoesData.map((acao, index) => {
           const isBlocked = !isCheckedIn && acoesBloqueadas.some(bloqueada => acao.titulo.includes(bloqueada.split(' ')[0]));
-          
+
           return (
-            <TouchableOpacity 
-              key={index} 
+            <TouchableOpacity
+              key={index}
               style={{ marginBottom: 12 }}
               disabled={isBlocked}
             >
@@ -369,7 +369,7 @@ export default function OrdemServicoDetalhes() {
             </TouchableOpacity>
           );
         })}
-        
+
         {!isCheckedIn && (
           <YStack
             backgroundColor={colors.warning}
@@ -390,7 +390,7 @@ export default function OrdemServicoDetalhes() {
   const AlmoxarifadoTab = () => (
     <YStack>
       <InfoCard title="ALMOXARIFADO DO CLIENTE">
-        <TouchableOpacity 
+        <TouchableOpacity
           style={{ marginBottom: 16 }}
           disabled={!isCheckedIn}
         >
@@ -405,16 +405,16 @@ export default function OrdemServicoDetalhes() {
             borderStyle="dashed"
             opacity={isCheckedIn ? 1 : 0.5}
           >
-            <Text 
-              color={isCheckedIn ? "#FFFFFF" : colors.secondaryText} 
-              fontSize={14} 
+            <Text
+              color={isCheckedIn ? "#FFFFFF" : colors.secondaryText}
+              fontSize={14}
               fontWeight="600"
             >
               {isCheckedIn ? "Adicionar item" : "Adicionar item (Bloqueado)"}
             </Text>
           </XStack>
         </TouchableOpacity>
-        
+
         {!isCheckedIn && (
           <YStack
             backgroundColor={colors.warning}
@@ -427,7 +427,7 @@ export default function OrdemServicoDetalhes() {
             </Text>
           </YStack>
         )}
-        
+
         {almoxarifadoData.map((item, index) => (
           <YStack
             key={index}
@@ -530,11 +530,11 @@ export default function OrdemServicoDetalhes() {
         <InfoRow icon={MapPin} label="Endereço ( Cliente )" value={osData.endereco} copyable />
         <InfoRow icon={MapPin} label="Complemento" value={osData.complemento} />
         <InfoRow icon={MapPin} label="Ponto de Referencia" value={osData.pontoReferencia} />
-        <InfoRow 
-          icon={MapPin} 
-          label="Latitude e Longitude" 
-          value={`${osData.latitude} ${osData.longitude}`} 
-          copyable 
+        <InfoRow
+          icon={MapPin}
+          label="Latitude e Longitude"
+          value={`${osData.latitude} ${osData.longitude}`}
+          copyable
         />
       </InfoCard>
 
@@ -564,7 +564,7 @@ export default function OrdemServicoDetalhes() {
         shadowOpacity={0.3}
         shadowRadius={8}
         elevation={isAndroid ? 6 : 4}
-        pressStyle={{ 
+        pressStyle={{
           opacity: 0.9,
           scale: 0.98
         }}
@@ -631,7 +631,7 @@ export default function OrdemServicoDetalhes() {
               </Text>
             </XStack>
           </TouchableOpacity>
-          
+
           <XStack
             backgroundColor={osStatus === 'Pendente' ? colors.warning : colors.primary}
             paddingHorizontal="$3"
@@ -652,12 +652,12 @@ export default function OrdemServicoDetalhes() {
         borderBottomColor={colors.border}
         ai={'center'}
       >
-        <ScrollView 
-          horizontal 
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ 
+          contentContainerStyle={{
             paddingHorizontal: 8,
-            paddingVertical: 8 
+            paddingVertical: 8
           }}
         >
           <XStack gap="$3">
@@ -677,9 +677,9 @@ export default function OrdemServicoDetalhes() {
                   borderWidth={1}
                   borderColor={activeTab === tab.id ? colors.primary : colors.border}
                 >
-                  <tab.icon 
-                    size={22} 
-                    color={activeTab === tab.id ? '#FFFFFF' : colors.secondaryText} 
+                  <tab.icon
+                    size={22}
+                    color={activeTab === tab.id ? '#FFFFFF' : colors.secondaryText}
                   />
                   <Text
                     fontSize={10}
@@ -698,9 +698,9 @@ export default function OrdemServicoDetalhes() {
         </ScrollView>
       </YStack>
 
-      <ScrollView 
+      <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ 
+        contentContainerStyle={{
           padding: 16,
           paddingBottom: 120
         }}
