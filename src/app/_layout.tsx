@@ -3,18 +3,20 @@ import { TamaguiProvider, Theme } from 'tamagui';
 import config from '../../tamagui.config';
 import { ThemeProvider, useThemeContext } from '../contexts/ThemeContext';
 
+import { StatusBar } from 'expo-status-bar';
+
 function AppContent() {
   const { isDarkMode } = useThemeContext();
-  
+
   return (
     <Theme name={isDarkMode ? "dark" : "light"}>
+      <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <Slot />
     </Theme>
   );
 }
 
-export default function RootLayout() {
-  return (
+export default function RootLayout() { return (
     <ThemeProvider>
       <TamaguiWrapper />
     </ThemeProvider>

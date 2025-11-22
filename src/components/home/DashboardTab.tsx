@@ -17,7 +17,7 @@ const DashboardTab = () => {
     secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
     border: isDarkMode ? '#333333' : '#E0E0E0',
     primary: '#007AFF',
-    success: '#11b3e4ff',
+    success: '#1fae4fff',
     warning: '#F59E0B',
     danger: '#EF4444',
     accent: '#374151',

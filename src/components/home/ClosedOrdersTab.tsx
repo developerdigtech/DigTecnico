@@ -23,7 +23,7 @@ const ClosedOrdersTab = () => {
     secondaryText: isDarkMode ? '#A0A0A0' : '#666666',
     border: isDarkMode ? '#333333' : '#E0E0E0',
     primary: '#007AFF',
-    success: '#11b3e4ff',
+    success: '#1fae4fff',
   };
 
   const orders: Order[] = [
@@ -58,7 +58,7 @@ const ClosedOrdersTab = () => {
           paddingVertical="$1"
           borderRadius="$3"
         >
-          <Text color="#FFFFFF" fontSize={12} fontWeight="600">
+          <Text color="#FFFFFF" fontSize={12} fontWeight="800">
             Finalizada
           </Text>
         </XStack>

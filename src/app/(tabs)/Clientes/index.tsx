@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { YStack, XStack, Text, Input, Button, useTheme, Card } from 'tamagui';
 import { Search, User, Phone, MapPin, Mail, Eye } from '@tamagui/lucide-icons';
 import { useThemeContext } from '../../../contexts/ThemeContext';
@@ -15,6 +16,7 @@ interface Client {
 }
 
 const Relatorios = () => {
+  const insets = useSafeAreaInsets();
   const theme = useTheme();
   const { isDarkMode } = useThemeContext();
   const [searchTerm, setSearchTerm] = useState('');
@@ -214,7 +216,13 @@ const Relatorios = () => {
       style={{ flex: 1, backgroundColor: colors.background }}
       showsVerticalScrollIndicator={false}
     >
-      <YStack padding="$5" gap="$5" backgroundColor={colors.background} paddingBottom="$20">
+      <YStack
+        padding="$5"
+        gap="$5"
+        backgroundColor={colors.background}
+        paddingBottom="$20"
+        paddingTop={insets.top + 20}
+      >
         {/* Header Clean */}
         <YStack gap="$2" ai={'center'}>
           <Text
