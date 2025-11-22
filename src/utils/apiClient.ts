@@ -78,6 +78,10 @@ export class ApiClient {
       const baseUrl = useRootUrl ? API_CONFIG.ROOT_URL : API_CONFIG.BASE_URL;
       const url = `${baseUrl}${endpoint}`;
 
+      console.log('🌐 [ApiClient] URL completa:', url);
+      console.log('🔑 [ApiClient] Token presente?', !!this.token);
+      console.log('📋 [ApiClient] Headers:', headers);
+
       // Faz a requisição com timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
@@ -90,8 +94,13 @@ export class ApiClient {
 
       clearTimeout(timeoutId);
 
+      console.log('📡 [ApiClient] Status da resposta:', response.status);
+      console.log('✅ [ApiClient] Response OK?', response.ok);
+
       // Parse da resposta
       const data = await response.json();
+
+      console.log('📦 [ApiClient] Dados parseados:', data);
 
       // Verifica se houve erro HTTP
       if (!response.ok) {
@@ -110,7 +119,17 @@ export class ApiClient {
         throw error;
       }
 
-      return data;
+      // Se a resposta já está no formato ApiResponse, retorna direto
+      // Caso contrário, envolve os dados no formato esperado
+      if (data && typeof data === 'object' && 'success' in data && 'data' in data) {
+        return data;
+      }
+
+      // A API retornou dados diretos (array ou objeto), então envolvemos no formato ApiResponse
+      return {
+        success: true,
+        data: data,
+      } as ApiResponse<T>;
     } catch (error: any) {
       // Tratamento de erros
       if (error.name === 'AbortError') {

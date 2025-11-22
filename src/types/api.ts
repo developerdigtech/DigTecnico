@@ -80,7 +80,7 @@ export interface Order {
 }
 
 export interface OrderDetail extends Order {
-  cliente: Client;
+  cliente: Customer;
   tecnico?: User;
   historico: OrderHistory[];
   materiais: Material[];
@@ -98,23 +98,29 @@ export interface OrderHistory {
 }
 
 // Tipos de Cliente
-export interface Client {
+export interface CustomerContact {
+  celular: string;
+  whatsapp: string;
+  email: string;
+}
+
+export interface CustomerLocation {
+  latitude: string;
+  longitude: string;
+}
+
+export interface Customer {
   id: string;
   nome: string;
-  cpfCnpj: string;
-  email?: string;
-  telefone: string;
+  cpf_cnpj: string;
   endereco: string;
-  numero: string;
-  complemento?: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-  latitude?: number;
-  longitude?: number;
-  observacoes?: string;
+  cidade_id: string;
+  uf: string;
+  contato: CustomerContact;
+  localizacao: CustomerLocation;
+  status: string; // "S" ou "N"
 }
+
 
 // Tipos de Almoxarifado
 export interface Material {

@@ -38,14 +38,14 @@ export const API_ENDPOINTS = {
     REFRESH_TOKEN: '/auth/refresh',
     VERIFY: '/auth/verify',
   },
-  
+
   // Usuários/Técnicos
   USERS: {
     PROFILE: '/users/profile',
     UPDATE_PROFILE: '/users/profile/update',
     TECHNICIANS: '/users/technicians',
   },
-  
+
   // Ordens de Serviço
   ORDERS: {
     LIST: '/orders',
@@ -57,14 +57,12 @@ export const API_ENDPOINTS = {
     CLOSED: '/orders/closed',
     STATISTICS: '/orders/statistics',
   },
-  
+
   // Clientes
-  CLIENTS: {
-    LIST: '/clients',
-    DETAIL: (id: string) => `/clients/${id}`,
-    SEARCH: '/clients/search',
+  CUSTOMERS: {
+    SEARCH: '/customers', // A query string ?search= será montada no serviço
   },
-  
+
   // Almoxarifado
   WAREHOUSE: {
     STOCK: '/warehouse/stock',
@@ -72,13 +70,13 @@ export const API_ENDPOINTS = {
     CREATE_ORDER: '/warehouse/orders/create',
     UPDATE_STOCK: '/warehouse/stock/update',
   },
-  
+
   // Dashboard
   DASHBOARD: {
     STATS: '/dashboard/stats',
     RECENT_ORDERS: '/dashboard/recent-orders',
   },
-  
+
   // Empresa/Filial
   COMPANY: {
     BRANCH: (organizationId: string, branchId: string) => `/empresa-filial/${organizationId}/${branchId}`,
