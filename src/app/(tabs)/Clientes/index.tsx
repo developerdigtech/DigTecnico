@@ -6,6 +6,7 @@ import { Search, User, Phone, MapPin, Mail, Eye, CheckCircle, XCircle } from '@t
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import { customerService } from '../../../services/customerService'; // Importe o serviço
 import { Customer } from '../../../types/api'; // Importe o tipo novo
+import CustomerDetailModal from '../../../components/clientes/CustomerDetailModal';
 
 export default function ClientesScreen() {
   const insets = useSafeAreaInsets();
@@ -16,6 +17,8 @@ export default function ClientesScreen() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const colors = {
     cardBackground: isDarkMode ? '#1F1F1F' : '#FFFFFF',
@@ -35,32 +38,30 @@ export default function ClientesScreen() {
       return;
     }
 
-    console.log('🚀 [ClientesScreen] Iniciando busca...');
-    console.log('🔎 [ClientesScreen] Termo:', searchTerm);
-
     Keyboard.dismiss();
     setIsLoading(true);
     setHasSearched(true);
 
     try {
-      console.log('📡 [ClientesScreen] Chamando customerService.searchCustomers...');
       const data = await customerService.searchCustomers(searchTerm);
-
-      console.log('✅ [ClientesScreen] Dados recebidos:', data);
-      console.log('📊 [ClientesScreen] Tipo:', typeof data);
-      console.log('📏 [ClientesScreen] É array?', Array.isArray(data));
-      console.log('📦 [ClientesScreen] Length:', data?.length);
-
       setCustomers(data);
-      console.log('💾 [ClientesScreen] Estado atualizado com', data?.length, 'clientes');
     } catch (error) {
-      console.error('❌ [ClientesScreen] Erro na busca:', error);
+      console.error('Erro na busca de clientes:', error);
       Alert.alert('Erro', 'Não foi possível realizar a busca. Verifique sua conexão.');
       setCustomers([]);
     } finally {
       setIsLoading(false);
-      console.log('🏁 [ClientesScreen] Busca finalizada');
     }
+  };
+
+  const handleViewDetails = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedCustomer(null);
   };
 
   const ClientCard = ({ client }: { client: Customer }) => (
@@ -181,7 +182,7 @@ export default function ClientesScreen() {
             color="white"
             borderRadius="$2"
             fontWeight="600"
-            onPress={() => console.log('Ver detalhes', client.id)}
+            onPress={() => handleViewDetails(client)}
           >
             <XStack alignItems="center" gap="$2">
               <Eye size={16} />
@@ -194,126 +195,135 @@ export default function ClientesScreen() {
   );
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
-      showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled"
-    >
-      <YStack
-        padding="$5"
-        gap="$5"
-        backgroundColor={colors.background}
-        paddingBottom="$20"
-        paddingTop={insets.top + 20}
+    <>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: colors.background }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
-        <YStack gap="$2" alignItems="center">
-          <Text fontSize={28} fontWeight="900" color={colors.text} marginTop="$3">
-            Clientes
-          </Text>
-          <Text fontSize={15} color={colors.secondaryText} textAlign="center">
-            Pesquise por Nome, CPF/CNPJ ou ID
-          </Text>
-        </YStack>
-
-        {/* Search Input */}
-        <XStack gap="$3" alignItems="center">
-          <YStack
-            flex={1}
-            bg={colors.cardBackground}
-            borderRadius="$10"
-            borderWidth={1}
-            borderColor={colors.border}
-            height={56}
-            justifyContent="center"
-          >
-            <XStack alignItems="center" paddingHorizontal="$4" gap="$3">
-              <Search size={20} color={colors.secondaryText} />
-              <Input
-                flex={1}
-                placeholder="Buscar cliente..."
-                placeholderTextColor={colors.secondaryText}
-                color={colors.text}
-                borderWidth={0}
-                backgroundColor="transparent"
-                value={searchTerm}
-                onChangeText={setSearchTerm}
-                fontSize={16}
-                onSubmitEditing={performSearch}
-                returnKeyType="search"
-              />
-            </XStack>
-          </YStack>
-
-          <Button
-            bg={colors.success}
-            width={56}
-            height={56}
-            borderRadius={28}
-            alignItems="center"
-            justifyContent="center"
-            onPress={performSearch}
-            disabled={isLoading}
-            opacity={isLoading ? 0.7 : 1}
-            shadowColor={colors.success}
-            shadowOffset={{ width: 0, height: 4 }}
-            shadowOpacity={0.3}
-            shadowRadius={8}
-            elevation={5}
-          >
-            {isLoading ? <Spinner color="white" /> : <Search size={24} color="white" />}
-          </Button>
-        </XStack>
-
-        {/* Resultados */}
-        {hasSearched && (
-          <YStack gap="$4">
-            <Text fontSize={18} fontWeight="400" color={colors.text}>
-              {isLoading
-                ? 'Buscando...'
-                : `${customers?.length || 0} resultado${customers?.length !== 1 ? 's' : ''}`
-              }
+        <YStack
+          padding="$5"
+          gap="$5"
+          backgroundColor={colors.background}
+          paddingBottom="$20"
+          paddingTop={insets.top + 20}
+        >
+          {/* Header */}
+          <YStack gap="$2" alignItems="center">
+            <Text fontSize={28} fontWeight="900" color={colors.text} marginTop="$3">
+              Clientes
             </Text>
-
-            {!isLoading && customers?.length > 0 ? (
-              customers.map((client) => (
-                <ClientCard key={client.id} client={client} />
-              ))
-            ) : !isLoading ? (
-              <Card
-                bg={colors.cardBackground}
-                padding="$8"
-                borderRadius="$3"
-                alignItems="center"
-                borderWidth={1}
-                borderColor={colors.border}
-              >
-                <YStack alignItems="center" gap="$3">
-                  <YStack
-                    bg={colors.accent}
-                    padding="$4"
-                    borderRadius="$4"
-                    width={80}
-                    height={80}
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Search size={32} color={colors.secondaryText} />
-                  </YStack>
-                  <YStack alignItems="center" gap="$2">
-                    <Text fontSize={16} color={colors.text} fontWeight="600">
-                      Nenhum cliente encontrado
-                    </Text>
-                    <Text fontSize={14} color={colors.secondaryText} textAlign="center">
-                      Verifique os dados e tente novamente
-                    </Text>
-                  </YStack>
-                </YStack>
-              </Card>
-            ) : null}
+            <Text fontSize={15} color={colors.secondaryText} textAlign="center">
+              Pesquise por Nome, CPF/CNPJ ou ID
+            </Text>
           </YStack>
-        )}
-      </YStack>
-    </ScrollView>
+
+          {/* Search Input */}
+          <XStack gap="$3" alignItems="center">
+            <YStack
+              flex={1}
+              bg={colors.cardBackground}
+              borderRadius="$10"
+              borderWidth={1}
+              borderColor={colors.border}
+              height={56}
+              justifyContent="center"
+            >
+              <XStack alignItems="center" paddingHorizontal="$4" gap="$3">
+                <Search size={20} color={colors.secondaryText} />
+                <Input
+                  flex={1}
+                  placeholder="Buscar cliente..."
+                  placeholderTextColor={colors.secondaryText}
+                  color={colors.text}
+                  borderWidth={0}
+                  backgroundColor="transparent"
+                  value={searchTerm}
+                  onChangeText={setSearchTerm}
+                  fontSize={16}
+                  onSubmitEditing={performSearch}
+                  returnKeyType="search"
+                />
+              </XStack>
+            </YStack>
+
+            <Button
+              bg={colors.success}
+              width={56}
+              height={56}
+              borderRadius={28}
+              alignItems="center"
+              justifyContent="center"
+              onPress={performSearch}
+              disabled={isLoading}
+              opacity={isLoading ? 0.7 : 1}
+              shadowColor={colors.success}
+              shadowOffset={{ width: 0, height: 4 }}
+              shadowOpacity={0.3}
+              shadowRadius={8}
+              elevation={5}
+            >
+              {isLoading ? <Spinner color="white" /> : <Search size={24} color="white" />}
+            </Button>
+          </XStack>
+
+          {/* Resultados */}
+          {hasSearched && (
+            <YStack gap="$4">
+              <Text fontSize={18} fontWeight="400" color={colors.text}>
+                {isLoading
+                  ? 'Buscando...'
+                  : `${customers?.length || 0} resultado${customers?.length !== 1 ? 's' : ''}`
+                }
+              </Text>
+
+              {!isLoading && customers?.length > 0 ? (
+                customers.map((client) => (
+                  <ClientCard key={client.id} client={client} />
+                ))
+              ) : !isLoading ? (
+                <Card
+                  bg={colors.cardBackground}
+                  padding="$8"
+                  borderRadius="$3"
+                  alignItems="center"
+                  borderWidth={1}
+                  borderColor={colors.border}
+                >
+                  <YStack alignItems="center" gap="$3">
+                    <YStack
+                      bg={colors.accent}
+                      padding="$4"
+                      borderRadius="$4"
+                      width={80}
+                      height={80}
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <Search size={32} color={colors.secondaryText} />
+                    </YStack>
+                    <YStack alignItems="center" gap="$2">
+                      <Text fontSize={16} color={colors.text} fontWeight="600">
+                        Nenhum cliente encontrado
+                      </Text>
+                      <Text fontSize={14} color={colors.secondaryText} textAlign="center">
+                        Verifique os dados e tente novamente
+                      </Text>
+                    </YStack>
+                  </YStack>
+                </Card>
+              ) : null}
+            </YStack>
+          )}
+        </YStack>
+      </ScrollView>
+
+      {/* Modal de Detalhes do Cliente */}
+      <CustomerDetailModal
+        visible={modalVisible}
+        customer={selectedCustomer}
+        onClose={handleCloseModal}
+      />
+    </>
   );
 }

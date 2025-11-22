@@ -78,10 +78,6 @@ export class ApiClient {
       const baseUrl = useRootUrl ? API_CONFIG.ROOT_URL : API_CONFIG.BASE_URL;
       const url = `${baseUrl}${endpoint}`;
 
-      console.log('🌐 [ApiClient] URL completa:', url);
-      console.log('🔑 [ApiClient] Token presente?', !!this.token);
-      console.log('📋 [ApiClient] Headers:', headers);
-
       // Faz a requisição com timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
@@ -94,13 +90,8 @@ export class ApiClient {
 
       clearTimeout(timeoutId);
 
-      console.log('📡 [ApiClient] Status da resposta:', response.status);
-      console.log('✅ [ApiClient] Response OK?', response.ok);
-
       // Parse da resposta
       const data = await response.json();
-
-      console.log('📦 [ApiClient] Dados parseados:', data);
 
       // Verifica se houve erro HTTP
       if (!response.ok) {
